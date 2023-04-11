@@ -1,0 +1,25 @@
+﻿<Window x:Class="BookStore.AddWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:BookStore"
+        mc:Ignorable="d"
+         Title="AddWindow" Loaded="Window_Loaded" Height="450" Width="600">
+    <Canvas>
+        <TextBlock Text="Tên sách:" Canvas.Left="80" Canvas.Top="117"/>
+        <TextBox Padding="5, 8, 0, 0" Text="{Binding Name}" d:Text="Data Binding List" Width="150" Height="35"  x:Name="nameTextBox" Canvas.Left="160" Canvas.Top="107" />
+
+        <TextBlock Text="Tên tác giả:" Canvas.Left="80" Canvas.Top="157"/>
+        <TextBox Padding="5, 8, 0, 0" Text="{Binding Author}"  d:Text="Huỳnh Minh Chiến" Width="150" Height="35"  x:Name="authorTextBox" Canvas.Left="160" Canvas.Top="147" />
+
+        <TextBlock Text="Năm sản xuất:" Canvas.Left="80" Canvas.Top="197"/>
+        <TextBox Padding="5, 8, 0, 0" Text="{Binding Publish}" d:Text="2002" Width="150" Height="35"  x:Name="publishTextBox" Canvas.Left="160" Canvas.Top="187" />
+
+        <Button x:Name="browseButton" Height="35" Width="80" Content="Browse..." Canvas.Left="404" Canvas.Top="217" HorizontalAlignment="Left" VerticalAlignment="Center" Click="browseButton_Click"/>
+        <Image x:Name="bookImage" Source="{Binding Image}" Height="100" Width="100" d:Source="Images/1.jpg" Canvas.Left="394" Canvas.Top="107"/>
+
+        <Button x:Name="okButton" IsDefault="True" Click="okButton_Click" Width="80" Height="35" Content="OK" Canvas.Left="80" Canvas.Top="306"/>
+        <Button x:Name="cancelButton" IsCancel="True" Width="80" Height="35" Content="Hủy" Canvas.Left="219" Canvas.Top="306"/>
+    </Canvas>
+</Window>
