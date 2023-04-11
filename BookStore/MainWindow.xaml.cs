@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using BookStore.View;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -56,7 +57,7 @@ namespace BookStore
 
                 string temp_password = getPassword(username);
 
-                if(temp_password!="" && temp_password.Equals(password))
+                if (temp_password != "" && temp_password.Equals(password))
                 {
                     BookList bookList = new BookList();
                     bookList.Show();
@@ -85,7 +86,7 @@ namespace BookStore
 
                     var passwordIn64 = Convert.ToBase64String(cypherText);
                     var entropyIn64 = Convert.ToBase64String(entropy);
-          
+
                     config.AppSettings.Settings["Password"].Value = passwordIn64;
                     config.AppSettings.Settings["Entropy"].Value = entropyIn64;
 
@@ -103,7 +104,7 @@ namespace BookStore
         }
         private void insert(string username, string password, string entropy)
         {
-            String sql = "INSERT INTO ACCOUNT VALUES (@username, @password,@entropy)";
+            string sql = "INSERT INTO ACCOUNT VALUES (@username, @password,@entropy)";
             var command = new SqlCommand(sql, _connection);
             command.Parameters.Add("@username", SqlDbType.NVarChar).Value = username;
             command.Parameters.Add("@password", SqlDbType.NVarChar).Value = password;
@@ -112,7 +113,7 @@ namespace BookStore
             command.ExecuteNonQuery();
         }
 
-        private String getPassword(string username)
+        private string getPassword(string username)
         {
             string sql =
                 "select password,entropy from ACCOUNT where username = @username";
@@ -126,19 +127,19 @@ namespace BookStore
 
             while (reader.Read())
             {
-      
+
                 string entropyIn64 = (string)reader["entropy"];
                 string passwordIn64 = (string)reader["password"];
 
-            byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
-            byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
+                byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
+                byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
 
-            byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
-                entropyInBytes,
-                DataProtectionScope.CurrentUser
-            );
+                byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
+                    entropyInBytes,
+                    DataProtectionScope.CurrentUser
+                );
 
-             password = Encoding.UTF8.GetString(passwordInBytes);
+                password = Encoding.UTF8.GetString(passwordInBytes);
 
             }
             reader.Close();
@@ -206,6 +207,12 @@ namespace BookStore
             {
                 MessageBox.Show($"Category {selected} is deleted");
             }
+        }
+
+        private void homeWindow_Click(object sender, RoutedEventArgs e)
+        {
+            var p = new HomeWindow();
+            p.Show();
         }
     }
 }
