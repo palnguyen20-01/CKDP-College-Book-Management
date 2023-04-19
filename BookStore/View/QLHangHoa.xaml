@@ -9,6 +9,7 @@
     <UserControl.Resources>
         <local:RelativeToAbsoluteConverter x:Key="absolute"/>
         <local:CategoryConverter x:Key="category"/>
+        <local:PriceConverter x:Key="price"/>
     </UserControl.Resources>
     <ListView Name="productListView" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
         <ListView.ItemTemplate>
@@ -24,6 +25,9 @@
                         <Run Text="{Binding Author}" FontWeight="Bold" Foreground="Red"/>
                          -
                         <Run Text="{Binding Publish}" FontWeight="Bold"/>
+                    </TextBlock>
+                    <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
+                        <Run Text="{Binding Price,Converter={StaticResource price}}" FontStyle="Italic" Foreground="DarkSlateGray"/>
                     </TextBlock>
                 </StackPanel>
             </DataTemplate>

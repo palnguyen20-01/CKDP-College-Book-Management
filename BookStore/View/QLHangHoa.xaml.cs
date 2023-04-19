@@ -2,6 +2,7 @@
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
+using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
@@ -29,30 +30,21 @@ namespace BookStore.View
             InitializeComponent();
         }
 
+        List<Category> _categories = null;
         ObservableCollection<Book> _books = null;
         private void UserControl_Initialized(object sender, EventArgs e)
         {
-            _books = new ObservableCollection<Book>()
-            {
-                /*new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"},
-                new Book() {Name = "How to play chess", Author = "Ngư Thuận Phong", Publish = "2000", Image = "Images/1.jpg"}*/
-            };
+            _books = new ObservableCollection<Book>();
             productListView.ItemsSource = _books;
+            _categories = new List<Category>() { new Category() { CategoryID = "0", CategoryName = "All" } };
+        }
+
+        public void getCategories(ObservableCollection<Category> categories)
+        {
+            foreach(var category in _categories)
+            {
+                categories.Add(category);
+            }
         }
 
         public void import()
@@ -64,9 +56,13 @@ namespace BookStore.View
                 filename = openFileDialog.FileName;
             }
 
+            if (filename.IsNullOrEmpty()) return;
+
             var document = SpreadsheetDocument.Open(filename, false);
             var wbPart = document.WorkbookPart!;
             var sheets = wbPart.Workbook.Descendants<Sheet>()!;
+
+            //Read Product Sheet
             var sheet = sheets.FirstOrDefault(s => s.Name == "Product");
             var wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
             var stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
@@ -98,11 +94,38 @@ namespace BookStore.View
                     Cell typeCell = cells.FirstOrDefault(c => c?.CellReference == $"F{row}")!;
                     string type = typeCell!.InnerText;
 
-                    _books.Add(new Book() { Name = name, Author = author, Image = image, Publish = publish, Type = type });
+                    Cell priceCell = cells.FirstOrDefault(c => c?.CellReference == $"G{row}")!;
+                    string price = priceCell!.InnerText;
+
+                    _books.Add(new Book() { Name = name, Author = author, Image = image, Publish = publish, Type = type , Price = price});
                 }
                 row++;
 
             } while (idCell?.InnerText.Length > 0);
+
+            //Read Category Sheet
+            sheet = sheets.FirstOrDefault(s => s.Name == "Category");
+            wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
+            stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
+            cells = wsPart.Worksheet.Descendants<Cell>();
+
+            row = 2;
+            do
+            {
+                idCell = cells.FirstOrDefault(c => c?.CellReference == $"A{row}")!;
+
+                if (idCell?.InnerText.Length > 0)
+                {
+                    Cell nameCell = cells.FirstOrDefault(c => c?.CellReference == $"B{row}")!;
+                    string nameID = nameCell!.InnerText;
+                    string name = stringTable.SharedStringTable.ElementAt(int.Parse(nameID)).InnerText;
+
+                    _categories.Add(new Category() { CategoryID = idCell.InnerText, CategoryName = name});
+                }
+                row++;
+
+            } while (idCell?.InnerText.Length > 0);
+
         }
     }
 }

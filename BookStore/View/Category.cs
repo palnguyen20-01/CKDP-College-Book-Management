@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BookStore.View
 {
-    class Category : INotifyPropertyChanged
+    public class Category : INotifyPropertyChanged
     {
         public string CategoryID { get; set; }
         public string CategoryName { get; set; }

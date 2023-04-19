@@ -21,6 +21,7 @@ namespace BookStore
         public string Publish { get; set; }
         public string Author { get; set; }
         public string Type { get; set; }
+        public string Price { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
