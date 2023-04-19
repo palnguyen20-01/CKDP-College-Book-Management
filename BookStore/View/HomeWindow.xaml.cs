@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Fluent;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -17,23 +19,57 @@ namespace BookStore.View
     /// <summary>
     /// Interaction logic for HomeWindow.xaml
     /// </summary>
-    public partial class HomeWindow : Window
+    public partial class HomeWindow : RibbonWindow
     {
         public HomeWindow()
         {
             InitializeComponent();
         }
 
-        private void test1_click(object sender, RoutedEventArgs e)
+        //MasterDataUserControl _master;
+        //OrdersUserConrol _orders;
+        //ReportUserControl _report;
+        private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            var tmp = new QLHangHoa();
-            contenDisplayMain.Content = tmp;
+            /*tabs.Items.Clear();
+
+            _master = new MasterDataUserControl();
+            _orders = new OrdersUserConrol();
+            _report = new ReportUserControl();
+
+            var screens = new ObservableCollection<TabItem>()
+            {
+                new TabItem() { Content = _master },
+                new TabItem() { Content = _orders },
+                new TabItem() { Content = _report }
+            };
+            tabs.ItemsSource = screens;*/
         }
 
-        private void test2_click(object sender, RoutedEventArgs e)
+        private void BackstageTabItem_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            var tmp = new QLDonHang();
-            contenDisplayMain.Content = tmp;
+            var result = MessageBox.Show("Are you sure you want to quit?",
+                "Confirmation", MessageBoxButton.YesNo);
+
+            if (result == MessageBoxResult.Yes)
+            {
+                Application.Current.Shutdown();
+            }
+        }
+
+        private void updateCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            //_master.Update("Duc");
+        }
+
+        private void addCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            //_master.Insert("Long");
+        }
+
+        private void deleteCategoryButton_Click(object sender, RoutedEventArgs e)
+        {
+            //_master.Delete("Tien");
         }
     }
 }
