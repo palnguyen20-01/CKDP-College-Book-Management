@@ -8,10 +8,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Assets\Icon\add.png" />
+    <None Remove="Assets\Icon\delete.png" />
     <None Remove="Assets\Icon\excel.png" />
+    <None Remove="Assets\Icon\filter.png" />
     <None Remove="Assets\Icon\open.png" />
     <None Remove="Assets\Icon\save.png" />
     <None Remove="Assets\Icon\search.png" />
+    <None Remove="Assets\Icon\update.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -23,9 +27,16 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Icon\add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Assets\Icon\delete.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Icon\excel.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Icon\filter.png" />
     <Resource Include="Assets\Icon\open.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
@@ -35,6 +46,7 @@
     <Resource Include="Assets\Icon\search.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Assets\Icon\update.png" />
   </ItemGroup>
 
   <ItemGroup>

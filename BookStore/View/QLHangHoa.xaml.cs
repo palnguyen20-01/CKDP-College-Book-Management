@@ -15,9 +15,6 @@ using System.Windows.Shapes;
 
 namespace BookStore.View
 {
-    /// <summary>
-    /// Interaction logic for QLHangHoa.xaml
-    /// </summary>
     public partial class QLHangHoa : UserControl
     {
         public QLHangHoa()

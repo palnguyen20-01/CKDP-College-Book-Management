@@ -81,17 +81,35 @@
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Filter">
-                    <StackPanel Orientation="Horizontal">
-                        <Fluent:DropDownButton Header="Type">
-                            <Fluent:DropDownButton.LargeIcon>
+                    <StackPanel Orientation="Vertical">
+                        <DockPanel>
+                            <TextBlock DockPanel.Dock="Top" HorizontalAlignment="Center">Price</TextBlock>
+                            <StackPanel Orientation="Horizontal" Margin="10 0 10 0" VerticalAlignment="Center" DockPanel.Dock="Bottom">
+                                <TextBlock>0</TextBlock>
+                                <Slider Minimum="0" Maximum="1000000" Value="1000000" Width="100" Margin="10 0 10 0"/>
+                                <TextBlock>1000000</TextBlock>
+                            </StackPanel>
+                        </DockPanel>
+                        <Fluent:ComboBox Header="Type" IsEditable="False" Width="120" HorizontalAlignment="Left" Margin="0 10 0 0">
+                            <Fluent:ComboBox.Icon>
                                 <Image Source="../Assets/Icon/filter.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                            </Fluent:DropDownButton.LargeIcon>
-                        </Fluent:DropDownButton>
-                        <StackPanel Orientation="Horizontal" Margin="10 0 0 0" VerticalAlignment="Center">
-                            <TextBlock>0</TextBlock>
-                            <Slider Minimum="0" Maximum="1000000" Value="1000000" Width="100" Margin="10 0 10 0"/>
-                            <TextBlock>1000000</TextBlock>
-                        </StackPanel>
+                            </Fluent:ComboBox.Icon>
+                            <Fluent:ComboBox.ItemTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding categoryName}"/>
+                                </DataTemplate>
+                            </Fluent:ComboBox.ItemTemplate>
+                        </Fluent:ComboBox>
+                    </StackPanel>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Search">
+                    <StackPanel Orientation="Horizontal" Height="70">
+                        <Fluent:TextBox Width="150" VerticalAlignment="Center" Margin="0 0 10 0"/>
+                        <Fluent:Button Height="35">
+                            <Fluent:Button.LargeIcon>
+                                <Image Source="../Assets/Icon/search.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                            </Fluent:Button.LargeIcon>
+                        </Fluent:Button>
                     </StackPanel>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
@@ -116,7 +134,7 @@
                     </Setter>
                 </Style>
             </TabControl.Resources>
-            <TabItem Header="Master">
+            <TabItem Header="Product data">
                 <TextBlock Text="Master"/>
             </TabItem>
             <TabItem Header="Orders">

@@ -16,9 +16,6 @@ using System.Windows.Shapes;
 
 namespace BookStore.View
 {
-    /// <summary>
-    /// Interaction logic for HomeWindow.xaml
-    /// </summary>
     public partial class HomeWindow : RibbonWindow
     {
         public HomeWindow()
@@ -26,16 +23,16 @@ namespace BookStore.View
             InitializeComponent();
         }
 
-        //MasterDataUserControl _master;
-        //OrdersUserConrol _orders;
-        //ReportUserControl _report;
+        QLHangHoa _master;
+        QLDonHang _orders;
+        BCThongKe _report;
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            /*tabs.Items.Clear();
+            tabs.Items.Clear();
 
-            _master = new MasterDataUserControl();
-            _orders = new OrdersUserConrol();
-            _report = new ReportUserControl();
+            _master = new QLHangHoa();
+            _orders = new QLDonHang();
+            _report = new BCThongKe();
 
             var screens = new ObservableCollection<TabItem>()
             {
@@ -43,7 +40,7 @@ namespace BookStore.View
                 new TabItem() { Content = _orders },
                 new TabItem() { Content = _report }
             };
-            tabs.ItemsSource = screens;*/
+            tabs.ItemsSource = screens;
         }
 
         private void BackstageTabItem_MouseDown(object sender, MouseButtonEventArgs e)
