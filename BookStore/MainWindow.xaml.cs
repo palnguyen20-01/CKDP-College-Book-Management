@@ -214,6 +214,13 @@ namespace BookStore
             var p = new HomeWindow();
             p.Show();
         }
+
+        private void DashBoardWindow_Click(object sender, RoutedEventArgs e)
+        {
+
+            var p = new IncomeProfitDashBoard();
+            p.Show();
+        }
     }
 }
 
