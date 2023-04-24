@@ -30,6 +30,10 @@
 
             </Fluent:Ribbon.Menu>
             <!--Product-->
+            <Fluent:RibbonTabItem Header="Dashboard">
+                
+            </Fluent:RibbonTabItem>
+            <!--Product-->
             <Fluent:RibbonTabItem Header="Product data">
                 <Fluent:RibbonGroupBox Header="Basic">
                     <Fluent:Button Header="Import" Click="productImportButton_Click">

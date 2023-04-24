@@ -27,6 +27,7 @@ namespace BookStore.View
             InitializeComponent();
         }
 
+        TrangChu _dashBoard;
         QLHangHoa _product;
         QLDonHang _orders;
         BCThongKe _report;
@@ -37,12 +38,14 @@ namespace BookStore.View
         {
             tabs.Items.Clear();
 
+            _dashBoard = new TrangChu();
             _product = new QLHangHoa();
             _orders = new QLDonHang();
             _report = new BCThongKe();
 
             var screens = new ObservableCollection<TabItem>()
             {
+                new TabItem() { Content = _dashBoard },
                 new TabItem() { Content = _product },
                 new TabItem() { Content = _orders },
                 new TabItem() { Content = _report }
