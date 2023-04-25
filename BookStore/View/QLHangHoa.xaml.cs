@@ -81,10 +81,10 @@ namespace BookStore.View
 
             if (filename.IsNullOrEmpty()) return;
 
-
-            /*_db.Categories.RemoveRange(_db.Categories);
+            //delete db
+            _db.Categories.RemoveRange(_db.Categories);
             _db.Books.RemoveRange(_db.Books);
-            _db.SaveChangesAsync();*/
+            _db.SaveChanges();
 
             var document = SpreadsheetDocument.Open(filename, false);
             var wbPart = document.WorkbookPart!;

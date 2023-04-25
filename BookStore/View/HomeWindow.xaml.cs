@@ -110,11 +110,5 @@ namespace BookStore.View
             AddNewOrder addNewOrder = new AddNewOrder();
             addNewOrder.Show();
         }
-
-        private void addOrderButton_Click(object sender, RoutedEventArgs e)
-        {
-            AddNewOrder addNewOrder = new AddNewOrder();
-            addNewOrder.Show();
-        }
     }
 }
