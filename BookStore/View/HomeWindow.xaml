@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:BookStore.View"
         xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
         mc:Ignorable="d"
-        Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded">
+        Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded"
+                     WindowStyle="None"  
+    WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
         <local:PriceConverter x:Key="priceConverter"/>
     </Window.Resources>
@@ -143,7 +145,32 @@
             </Fluent:RibbonTabItem>
             <!--Orders-->
             <Fluent:RibbonTabItem Header="Orders">
-
+                <Fluent:RibbonGroupBox Header="Orders">
+                    <Fluent:Button Header="Add" Click="addOrderButton_Click">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/add.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Add" Text="Add new product"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Delete">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/delete.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Delete" Text="Delete product"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Update">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/update.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Update" Text="Update product"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <!--Report-->
             <Fluent:RibbonTabItem Header="Report">

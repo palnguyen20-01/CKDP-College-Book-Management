@@ -103,5 +103,11 @@ namespace BookStore.View
             _product.import();
             _product.getCategories(_categories);
         }
+
+        private void addOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddNewOrder addNewOrder = new AddNewOrder();
+            addNewOrder.Show();
+        }
     }
 }

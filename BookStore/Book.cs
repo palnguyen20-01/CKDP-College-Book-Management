@@ -45,7 +45,6 @@ namespace BookStore
 
             var command = new SqlCommand(sql, MainWindow._connection);
             
-
             var reader = command.ExecuteReader();
 
             while (reader.Read())
