@@ -11,17 +11,21 @@ using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using BookStore.View;
 
 namespace BookStore
 {
     public class Book : INotifyPropertyChanged, ICloneable
     {
+        public int ID { get; set; }
         public string Name { get; set; }
         public string Image { get; set; }
         public string Publish { get; set; }
         public string Author { get; set; }
-        public string Type { get; set; }
+        public int CategoryID { get; set; }
         public string Price { get; set; }
+        public string RawPrice { get; set; }
+        public virtual Category Category { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
 
@@ -45,7 +49,6 @@ namespace BookStore
 
             var command = new SqlCommand(sql, MainWindow._connection);
             
-
             var reader = command.ExecuteReader();
 
             while (reader.Read())

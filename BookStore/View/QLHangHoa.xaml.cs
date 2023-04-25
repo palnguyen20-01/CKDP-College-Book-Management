@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Packaging;
+﻿using BookStore.View.Class;
+using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Vml;
 using DocumentFormat.OpenXml.Wordprocessing;
@@ -32,11 +33,21 @@ namespace BookStore.View
 
         List<Category> _categories = null;
         ObservableCollection<Book> _books = null;
+        DBContext _db;
         private void UserControl_Initialized(object sender, EventArgs e)
         {
             _books = new ObservableCollection<Book>();
             productListView.ItemsSource = _books;
-            _categories = new List<Category>() { new Category() { CategoryID = "0", CategoryName = "All" } };
+            _categories = new List<Category>() { new Category() { CategoryID = 0, CategoryName = "All" } };
+            _db = new DBContext();
+            if (_db.Database.CanConnect())
+            {
+                MessageBox.Show("DB connection is good");
+            }
+            else
+            {
+                MessageBox.Show("DB connection is bad");
+            }
         }
 
         public void getCategories(ObservableCollection<Category> categories)
@@ -45,6 +56,18 @@ namespace BookStore.View
             {
                 categories.Add(category);
             }
+        }
+
+        public void getPrice(ref Price price)
+        {
+            price.maxPrice = 0;
+            price.minPrice = 999999999;
+            foreach(var book in _books)
+            {
+                price.minPrice = int.Min(price.minPrice, int.Parse(book.Price));
+                price.maxPrice = int.Max(price.maxPrice, int.Parse(book.Price));
+            }
+            price.currentPrice = price.maxPrice;
         }
 
         public void import()
@@ -58,18 +81,48 @@ namespace BookStore.View
 
             if (filename.IsNullOrEmpty()) return;
 
+
+            /*_db.Categories.RemoveRange(_db.Categories);
+            _db.Books.RemoveRange(_db.Books);
+            _db.SaveChangesAsync();*/
+
             var document = SpreadsheetDocument.Open(filename, false);
             var wbPart = document.WorkbookPart!;
             var sheets = wbPart.Workbook.Descendants<Sheet>()!;
 
-            //Read Product Sheet
-            var sheet = sheets.FirstOrDefault(s => s.Name == "Product");
+            //Read Category Sheet
+            var sheet = sheets.FirstOrDefault(s => s.Name == "Category");
             var wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
             var stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
             var cells = wsPart.Worksheet.Descendants<Cell>();
 
             Cell idCell;
             int row = 2;
+            do
+            {
+                idCell = cells.FirstOrDefault(c => c?.CellReference == $"A{row}")!;
+
+                if (idCell?.InnerText.Length > 0)
+                {
+                    Cell nameCell = cells.FirstOrDefault(c => c?.CellReference == $"B{row}")!;
+                    string nameID = nameCell!.InnerText;
+                    string name = stringTable.SharedStringTable.ElementAt(int.Parse(nameID)).InnerText;
+
+                    var category = new Category() { CategoryID = int.Parse(idCell.InnerText), CategoryName = name };
+                    _categories.Add(category);
+                    _db.insertCategory(category);
+                }
+                row++;
+
+            } while (idCell?.InnerText.Length > 0);
+
+            //Read Product Sheet
+            sheet = sheets.FirstOrDefault(s => s.Name == "Product");
+            wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
+            stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
+            cells = wsPart.Worksheet.Descendants<Cell>();
+            
+            row = 2;
             do
             {
                 idCell = cells.FirstOrDefault(c => c?.CellReference == $"A{row}")!;
@@ -91,36 +144,18 @@ namespace BookStore.View
                     Cell publishCell = cells.FirstOrDefault(c => c?.CellReference == $"E{row}")!;
                     string publish = publishCell!.InnerText;
 
-                    Cell typeCell = cells.FirstOrDefault(c => c?.CellReference == $"F{row}")!;
-                    string type = typeCell!.InnerText;
+                    Cell categoryIDCell = cells.FirstOrDefault(c => c?.CellReference == $"F{row}")!;
+                    string categoryID = categoryIDCell!.InnerText;
 
                     Cell priceCell = cells.FirstOrDefault(c => c?.CellReference == $"G{row}")!;
                     string price = priceCell!.InnerText;
 
-                    _books.Add(new Book() { Name = name, Author = author, Image = image, Publish = publish, Type = type , Price = price});
-                }
-                row++;
+                    Cell rawPriceCell = cells.FirstOrDefault(c => c?.CellReference == $"H{row}")!;
+                    string rawPrice = rawPriceCell!.InnerText;
 
-            } while (idCell?.InnerText.Length > 0);
-
-            //Read Category Sheet
-            sheet = sheets.FirstOrDefault(s => s.Name == "Category");
-            wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
-            stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
-            cells = wsPart.Worksheet.Descendants<Cell>();
-
-            row = 2;
-            do
-            {
-                idCell = cells.FirstOrDefault(c => c?.CellReference == $"A{row}")!;
-
-                if (idCell?.InnerText.Length > 0)
-                {
-                    Cell nameCell = cells.FirstOrDefault(c => c?.CellReference == $"B{row}")!;
-                    string nameID = nameCell!.InnerText;
-                    string name = stringTable.SharedStringTable.ElementAt(int.Parse(nameID)).InnerText;
-
-                    _categories.Add(new Category() { CategoryID = idCell.InnerText, CategoryName = name});
+                    var book = new Book() { ID = int.Parse(idCell!.InnerText), Name = name, Author = author, Image = image, Publish = publish, CategoryID = int.Parse(categoryID), Price = price, RawPrice = rawPrice };
+                    _books.Add(book);
+                    _db.insertBook(book);
                 }
                 row++;
 

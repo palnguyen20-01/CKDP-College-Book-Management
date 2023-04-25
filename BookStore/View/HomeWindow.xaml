@@ -6,7 +6,9 @@
         xmlns:local="clr-namespace:BookStore.View"
         xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
         mc:Ignorable="d"
-        Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded">
+        Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded"
+                     WindowStyle="None"  
+    WindowStartupLocation="CenterScreen" WindowState="Maximized">
     <Window.Resources>
         <local:PriceConverter x:Key="priceConverter"/>
     </Window.Resources>
@@ -31,7 +33,7 @@
             </Fluent:Ribbon.Menu>
             <!--Product-->
             <Fluent:RibbonTabItem Header="Dashboard">
-                
+
             </Fluent:RibbonTabItem>
             <!--Product-->
             <Fluent:RibbonTabItem Header="Product data">
@@ -42,14 +44,6 @@
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Import" Text="Import xlsx file"/>
-                        </Fluent:Button.ToolTip>
-                    </Fluent:Button>
-                    <Fluent:Button Header="Save">
-                        <Fluent:Button.LargeIcon>
-                            <Image Source="../Assets/Icon/save.png" RenderOptions.BitmapScalingMode="HighQuality"/>
-                        </Fluent:Button.LargeIcon>
-                        <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Save" Text="Save data to database"/>
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
@@ -114,7 +108,7 @@
                             </StackPanel>
                             <StackPanel Orientation="Horizontal" Margin="10 0 10 0" VerticalAlignment="Center" DockPanel.Dock="Bottom">
                                 <TextBlock Name="minPriceTextBlock" Text="{Binding minPrice, Converter={StaticResource priceConverter}}"/>
-                                <Slider Name="priceSlider" ValueChanged="priceSlider_ValueChanged" Minimum="0" Maximum="1000000" Value="{Binding maxPrice}" Width="100" Margin="10 0 10 0"/>
+                                <Slider Name="priceSlider" ValueChanged="priceSlider_ValueChanged" Minimum="{Binding minPrice}" Maximum="{Binding maxPrice}" Value="{Binding currentPrice}" Width="100" Margin="10 0 10 0"/>
                                 <TextBlock Name="maxPriceTextBlock" Text="{Binding maxPrice, Converter={StaticResource priceConverter}}"/>
                             </StackPanel>
                         </DockPanel>
@@ -143,7 +137,32 @@
             </Fluent:RibbonTabItem>
             <!--Orders-->
             <Fluent:RibbonTabItem Header="Orders">
-
+                <Fluent:RibbonGroupBox Header="Orders">
+                    <Fluent:Button Header="Add" Click="addOrderButton_Click">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/add.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Add" Text="Add new product"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Delete">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/delete.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Delete" Text="Delete product"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                    <Fluent:Button Header="Update">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/update.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Update" Text="Update product"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
             <!--Report-->
             <Fluent:RibbonTabItem Header="Report">

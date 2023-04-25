@@ -20,7 +20,7 @@
                         <Run Text="{Binding Name}" FontWeight="Bold" Foreground="Blue"/>
                     </TextBlock>
                     <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
-                        <Run Text="{Binding Type, Converter={StaticResource category}}" FontWeight="Bold"/>
+                        <Run Text="{Binding CategoryID, Converter={StaticResource category}}" FontWeight="Bold"/>
                          -
                         <Run Text="{Binding Author}" FontWeight="Bold" Foreground="Red"/>
                          -

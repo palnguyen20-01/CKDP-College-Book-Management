@@ -57,12 +57,13 @@ namespace BookStore.View
             _price = new Price()
             {
                 minPrice = 0,
-                maxPrice = 1000000,
-                currentPrice = 1000000
+                maxPrice = 0,
+                currentPrice = 0
             };
             priceTextBlock.DataContext = _price;
             minPriceTextBlock.DataContext = _price;
             maxPriceTextBlock.DataContext = _price;
+            priceSlider.DataContext = _price;
         }
 
         private void BackstageTabItem_MouseDown(object sender, MouseButtonEventArgs e)
@@ -102,6 +103,12 @@ namespace BookStore.View
         {
             _product.import();
             _product.getCategories(_categories);
+            _product.getPrice(ref _price);
+        }
+        private void addOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            AddNewOrder addNewOrder = new AddNewOrder();
+            addNewOrder.Show();
         }
     }
 }

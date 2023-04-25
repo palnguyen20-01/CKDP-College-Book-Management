@@ -7,10 +7,11 @@ using System.Threading.Tasks;
 
 namespace BookStore.View
 {
-    public class Category : INotifyPropertyChanged
+    public class Price : INotifyPropertyChanged
     {
-        public string CategoryID { get; set; }
-        public string CategoryName { get; set; }
+        public int minPrice { get; set; }
+        public int maxPrice { get; set; }
+        public int currentPrice { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;
     }
