@@ -59,8 +59,8 @@ namespace BookStore
 
                 if (temp_password != "" && temp_password.Equals(password))
                 {
-                    BookList bookList = new BookList();
-                    bookList.Show();
+                    HomeWindow home = new HomeWindow();
+                    home.Show();
                 }
 
                 if (rememberCheckBox.IsChecked == true)

@@ -9,7 +9,8 @@
         mc:Ignorable="d"
         Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded"
                      WindowStyle="None"  
-    WindowStartupLocation="CenterScreen" WindowState="Maximized">
+    WindowStartupLocation="CenterScreen" WindowState="Maximized"
+                     Closing="Window_Closing">
     <Window.Resources>
         <local:PriceConverter x:Key="priceConverter"/>
     </Window.Resources>
