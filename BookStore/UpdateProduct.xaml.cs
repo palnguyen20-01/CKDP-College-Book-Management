@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -25,9 +26,9 @@ namespace BookStore
     public partial class UpdateProduct : MetroWindow
     {
         public Book book;
-        List<Category> categories;
+        ObservableCollection<Category> categories;
         FileInfo _selectedImage;
-        public UpdateProduct(Book current_book, List<Category> categories_list)
+        public UpdateProduct(Book current_book, ObservableCollection<Category> categories_list)
         {
             InitializeComponent();
             book = current_book;

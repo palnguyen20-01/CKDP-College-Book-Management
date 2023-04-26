@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -27,7 +28,7 @@ namespace BookStore
         public Book book;
         List<Category> categories;
         FileInfo _selectedImage;
-        public AddProduct(int id, List<Category> categories_list)
+        public AddProduct(int id, ObservableCollection<Category> categories_list)
         {
             InitializeComponent();
             book = new Book()

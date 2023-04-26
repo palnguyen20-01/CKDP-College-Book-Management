@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -33,9 +34,10 @@ namespace BookStore.View.Class
             SaveChanges();
         }
 
-        public void updateCategory(Category category)
+        public void updateCategory(int index)
         {
-            Categories.Update(category);
+            List<Category> categories = Categories.ToList();
+            Categories.Update(categories[index - 1]);
             SaveChanges();
         }
 

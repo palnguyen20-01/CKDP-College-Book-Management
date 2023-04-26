@@ -33,7 +33,7 @@ namespace BookStore.View
             InitializeComponent();
         }
 
-        public List<Category> _categories = null;
+        public ObservableCollection<Category> _categories = null;
 
         ObservableCollection<Book> _books = null;
         DBContext _db;
@@ -44,7 +44,7 @@ namespace BookStore.View
         {
             _books = new ObservableCollection<Book>();
             productListView.ItemsSource = _books;
-            _categories = new List<Category>() { new Category() { CategoryID = 0, CategoryName = "All" } };
+            _categories = new ObservableCollection<Category>() { new Category() { CategoryID = 0, CategoryName = "All" } };
             _db = new DBContext();
             if (!_db.Database.CanConnect())
             {
@@ -59,7 +59,11 @@ namespace BookStore.View
             }
 
             //Read Category data
-            _categories = _db.getCategories();
+            List<Category> _temp_categories = _db.getCategories();
+            foreach(var category in _temp_categories)
+            {
+                _categories.Add(category);
+            }
 
             //Read Price data
             _price = new Price();
@@ -85,6 +89,9 @@ namespace BookStore.View
 
             //delete _books
             _books.Clear();
+
+            //delete _categories
+            _categories.Clear();
 
             //delete db
             _db.Categories.RemoveRange(_db.Categories);
@@ -177,7 +184,7 @@ namespace BookStore.View
 
         public void addProduct()
         {
-            int productID = 0;
+            int productID = 1;
             if(_books.Count > 0)
             {
                 productID = _books.Last().ID + 1;
@@ -221,17 +228,40 @@ namespace BookStore.View
 
         public void addCategory()
         {
-
+            int categoryID = 1;
+            if (_categories.Count > 0)
+            {
+                categoryID = _categories.Last().CategoryID + 1;
+            }
+            AddCategory addCategory = new AddCategory(categoryID);
+            bool? result = addCategory.ShowDialog();
+            if (result == true)
+            {
+                _categories.Add(addCategory.category);
+                _db.insertCategory(addCategory.category);
+            }
         }
 
         public void deleteCategory()
         {
-
+            DeleteCategory deleteCategory = new DeleteCategory(_categories);
+            bool? result = deleteCategory.ShowDialog();
+            if (result == true)
+            {
+                _db.deleteCategory(_categories[deleteCategory.selectedCategoryIndex]);
+                _categories.RemoveAt(deleteCategory.selectedCategoryIndex);
+            }
         }
 
         public void updateCategory()
         {
-
+            UpdateCategory updateCategory = new UpdateCategory(_categories);
+            bool? result = updateCategory.ShowDialog();
+            if (result == true)
+            {
+                _categories[updateCategory.selectedCategoryIndex] = updateCategory.category;
+                _db.updateCategory(updateCategory.selectedCategoryIndex);
+            }
         }
 
         private void deleteProduct_MouseClick(object sender, RoutedEventArgs e)
