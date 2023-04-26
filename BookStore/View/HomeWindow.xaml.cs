@@ -3,6 +3,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Configuration;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -53,6 +54,13 @@ namespace BookStore.View
             categoryCombobox.ItemsSource = _product._categories;
 
             priceSliderDockPanel.DataContext = _product._price;
+
+            string closedTab = ConfigurationManager.AppSettings["ClosedTab"]!;
+            if (closedTab.Length > 0)
+            {
+                int numTab = Int32.Parse(closedTab);
+                Dispatcher.BeginInvoke((Action)(() => tabs.SelectedIndex = numTab));
+            }
         }
 
         private void BackstageTabItem_MouseDown(object sender, MouseButtonEventArgs e)
@@ -110,6 +118,14 @@ namespace BookStore.View
         private void updateCategoryButton_Click(object sender, RoutedEventArgs e)
         {
             _product.updateCategory();
+        }
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            var config = ConfigurationManager.OpenExeConfiguration(
+                        ConfigurationUserLevel.None);
+            config.AppSettings.Settings["ClosedTab"].Value = tabs.SelectedIndex.ToString();
+            config.Save(ConfigurationSaveMode.Full);
+            ConfigurationManager.RefreshSection("appSettings");
         }
     }
 }
