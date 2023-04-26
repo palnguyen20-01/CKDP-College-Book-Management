@@ -201,6 +201,14 @@ namespace BookStore.View
 
         public void deleteProduct()
         {
+            int selectedBookIndex = productListView.SelectedIndex;
+            if (selectedBookIndex == -1) return;
+            if (System.Windows.MessageBox.Show("Do you want to delete this product?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                _db.deleteBook(_books[selectedBookIndex]);
+                _books.RemoveAt(selectedBookIndex);
+                resetPrice();
+            }
 
         }
 
@@ -224,5 +232,14 @@ namespace BookStore.View
 
         }
 
+        private void deleteProduct_MouseClick(object sender, RoutedEventArgs e)
+        {
+            deleteProduct();
+        }
+
+        private void updateProduct_MouseClick(object sender, RoutedEventArgs e)
+        {
+            updateProduct();
+        }
     }
 }
