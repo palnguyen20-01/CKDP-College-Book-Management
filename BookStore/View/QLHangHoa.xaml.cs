@@ -33,7 +33,8 @@ namespace BookStore.View
             InitializeComponent();
         }
 
-        List<Category> _categories = null;
+        public List<Category> _categories = null;
+
         ObservableCollection<Book> _books = null;
         DBContext _db;
 
@@ -63,14 +64,6 @@ namespace BookStore.View
             //Read Price data
             _price = new Price();
             resetPrice();
-        }
-
-        public void getCategories(ObservableCollection<Category> categories)
-        {
-            foreach(var category in _categories)
-            {
-                categories.Add(category);
-            }
         }
 
         public Price getPrice()
@@ -214,7 +207,16 @@ namespace BookStore.View
 
         public void updateProduct()
         {
-
+            int selectedBookIndex = productListView.SelectedIndex;
+            if (selectedBookIndex == -1) return;
+            UpdateProduct updateProduct = new UpdateProduct(_books[selectedBookIndex], _categories);
+            bool? result = updateProduct.ShowDialog();
+            if (result == true)
+            {
+                _books[selectedBookIndex] = updateProduct.book;
+                _db.updateBook(_books[selectedBookIndex]);
+                resetPrice();
+            }
         }
 
         public void addCategory()

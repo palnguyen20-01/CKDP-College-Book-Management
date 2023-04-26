@@ -20,36 +20,22 @@ using System.Windows.Shapes;
 namespace BookStore
 {
     /// <summary>
-    /// Interaction logic for AddProduct.xaml
+    /// Interaction logic for UpdateProduct.xaml
     /// </summary>
-    public partial class AddProduct : MetroWindow
+    public partial class UpdateProduct : MetroWindow
     {
         public Book book;
         List<Category> categories;
         FileInfo _selectedImage;
-        public AddProduct(int id, List<Category> categories_list)
+        public UpdateProduct(Book current_book, List<Category> categories_list)
         {
             InitializeComponent();
-            book = new Book()
-            {
-                ID = id,
-                Name = "",
-                Author = "",
-                Image = "Images/0.jpg",
-                Publish = "",
-                CategoryID = 1,
-                Price = "",
-                RawPrice = ""
-            };
-
-            categories = new List<Category>();
-            foreach (Category category in categories_list)
-            {
-                if(category.CategoryName != "All")
-                    categories.Add(category);
-            }
-            productDataAddWindow.DataContext = book;
+            book = current_book;
+            categories = categories_list;
+            productDataUpdateWindow.DataContext = book;
             productCategoryCombobox.ItemsSource = categories;
+            productCategoryCombobox.SelectedIndex = book.CategoryID - 1;
+            _selectedImage = new FileInfo(book.Image);
         }
 
         private void browseProductImageButton_Click(object sender, RoutedEventArgs e)
@@ -69,14 +55,15 @@ namespace BookStore
 
         private void productOKButton_Click(object sender, RoutedEventArgs e)
         {
-            if(
+            if (
                 book.Name.IsNullOrEmpty() ||
                 book.Author.IsNullOrEmpty() ||
                 book.Publish.IsNullOrEmpty() ||
                 book.Price.IsNullOrEmpty() ||
                 book.RawPrice.IsNullOrEmpty() ||
                 productCategoryCombobox.SelectedIndex < 0
-            ){
+            )
+            {
                 MessageBox.Show("Please enter full information!!!");
                 return;
             }

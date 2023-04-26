@@ -31,7 +31,6 @@ namespace BookStore.View
         QLHangHoa _product;
         QLDonHang _orders;
         BCThongKe _report;
-        ObservableCollection<Category> _categories = new ObservableCollection<Category>();
 
         private void RibbonWindow_Loaded(object sender, RoutedEventArgs e)
         {
@@ -51,7 +50,7 @@ namespace BookStore.View
             };
             tabs.ItemsSource = screens;
 
-            categoryCombobox.ItemsSource = _categories;
+            categoryCombobox.ItemsSource = _product._categories;
 
             priceSliderDockPanel.DataContext = _product._price;
         }
@@ -77,7 +76,6 @@ namespace BookStore.View
         private void productImportButton_Click(object sender, RoutedEventArgs e)
         {
             _product.import();
-            _product.getCategories(_categories);
         }
         private void addOrderButton_Click(object sender, RoutedEventArgs e)
         {

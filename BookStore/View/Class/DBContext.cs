@@ -33,6 +33,12 @@ namespace BookStore.View.Class
             SaveChanges();
         }
 
+        public void updateCategory(Category category)
+        {
+            Categories.Update(category);
+            SaveChanges();
+        }
+
         public List<Category> getCategories()
         {
             return Categories.ToList();
@@ -47,6 +53,12 @@ namespace BookStore.View.Class
         public void deleteBook(Book book)
         {
             Books.Remove(book);
+            SaveChanges();
+        }
+
+        public void updateBook(Book book)
+        {
+            Books.Update(book);
             SaveChanges();
         }
 
