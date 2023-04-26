@@ -27,9 +27,26 @@ namespace BookStore.View.Class
             SaveChanges();
         }
 
+        public void deleteCategory(Category category)
+        {
+            Categories.Remove(category);
+            SaveChanges();
+        }
+
+        public List<Category> getCategories()
+        {
+            return Categories.ToList();
+        }
+
         public void insertBook(Book book)
         {
             Books.Add(book);
+            SaveChanges();
+        }
+
+        public void deleteBook(Book book)
+        {
+            Books.Remove(book);
             SaveChanges();
         }
 
@@ -40,11 +57,6 @@ namespace BookStore.View.Class
             books = Books.ToList();
 
             return books;
-        }
-
-        public List<Category> getCategories()
-        {
-            return Categories.ToList();
         }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

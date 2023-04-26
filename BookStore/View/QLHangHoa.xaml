@@ -39,12 +39,12 @@
         </ListView.ItemsPanel>
         <ListView.Resources>
             <ContextMenu x:Key="productsContextMenu">
-                <MenuItem Header="Delete" Width="120" Height="30">
+                <MenuItem Header="Delete" Click="deleteProduct_MouseClick" Width="120" Height="30">
                     <MenuItem.Icon>
                         <Image RenderOptions.BitmapScalingMode="HighQuality" Source="../Assets/Icon/delete.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Update" Width="120" Height="30">
+                <MenuItem Header="Update" Click="updateProduct_MouseClick" Width="120" Height="30">
                     <MenuItem.Icon>
                         <Image RenderOptions.BitmapScalingMode="HighQuality" Source="../Assets/Icon/update.png"/>
                     </MenuItem.Icon>
