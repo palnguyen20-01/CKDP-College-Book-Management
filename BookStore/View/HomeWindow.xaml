@@ -145,23 +145,23 @@
                             <Image Source="../Assets/Icon/add.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Add" Text="Add new product"/>
+                            <Fluent:ScreenTip Title="Add" Text="Add new order"/>
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Delete">
+                    <Fluent:Button Header="Delete" Click="deleteOrderButton_Click">
                         <Fluent:Button.LargeIcon>
                             <Image Source="../Assets/Icon/delete.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Delete" Text="Delete product"/>
+                            <Fluent:ScreenTip Title="Delete" Text="Delete order"/>
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
-                    <Fluent:Button Header="Update">
+                    <Fluent:Button Header="Update" Click="updateOrderButton_Click">
                         <Fluent:Button.LargeIcon>
                             <Image Source="../Assets/Icon/update.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                         </Fluent:Button.LargeIcon>
                         <Fluent:Button.ToolTip>
-                            <Fluent:ScreenTip Title="Update" Text="Update product"/>
+                            <Fluent:ScreenTip Title="Update" Text="Update order"/>
                         </Fluent:Button.ToolTip>
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>

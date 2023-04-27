@@ -36,7 +36,7 @@ namespace BookStore.View
         public ObservableCollection<Category> _categories = null;
 
         ObservableCollection<Book> _books = null;
-        DBContext _db;
+        public static DBContext _db;
 
         public Price _price = null;
 

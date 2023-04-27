@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Office.Word;
+﻿using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Office.Word;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace BookStore
         public DateOnly date { get; set; }
         public int totalPrice { get; set; }
         public string username { get; set; }
-      
+         public int status { get; set; }
         public event PropertyChangedEventHandler? PropertyChanged;
 
         public object Clone()
@@ -75,16 +76,19 @@ namespace BookStore
             while (reader.Read())
             {
                 int id =(int) reader["id"];
-                DateOnly date =(DateOnly) reader["date"];
+                DateTime datetime =(DateTime) reader["date"];
+                DateOnly date = DateOnly.FromDateTime(datetime);
                 int totalPrice = (int)reader["totalPrice"];
                 string username = (string)reader["username"];
+                int status = (int)reader["status"];
 
                 list.Add(new Order()
                 {
                     id = id,
                     date = date,
                     totalPrice = totalPrice,
-                    username = username
+                    username = username,
+                    status = status,
                 });
             }
 
@@ -92,9 +96,41 @@ namespace BookStore
             return list;
         }
 
-        public void insert(int id,DateOnly date, string username , int totalPrice=0)
+        public Order GetById(int Id)
         {
-            string sql = "INSERT INTO ORDERS VALUES (@id,@date, @totalPrice,@username)";
+            string sql =
+                "select * from ORDERS where id=@id";
+
+            var command = new SqlCommand(sql, _connection);
+            command.Parameters.Add("@id", SqlDbType.Int).Value = Id;
+
+            var reader = command.ExecuteReader();
+
+          
+                int id = (int)reader["id"];
+                DateTime datetime = (DateTime)reader["date"];
+                DateOnly date = DateOnly.FromDateTime(datetime);
+                int totalPrice = (int)reader["totalPrice"];
+                string username = (string)reader["username"];
+                int status = (int)reader["status"];
+
+               var result=new Order()
+                {
+                    id = id,
+                    date = date,
+                    totalPrice = totalPrice,
+                    username = username,
+                    status = status,
+                };
+            
+
+            reader.Close();
+            return result;
+        }
+
+        public void insert(int id,DateOnly date, string username , int totalPrice=0,int status=1)
+        {
+            string sql = "INSERT INTO ORDERS VALUES (@id,@date, @totalPrice,@username,@status)";
             
             var command = new SqlCommand(sql, _connection);
   
@@ -103,6 +139,7 @@ namespace BookStore
             command.Parameters.Add("@date", SqlDbType.Date).Value = date;
             command.Parameters.Add("@totalPrice", SqlDbType.Int).Value = totalPrice;
             command.Parameters.Add("@username", SqlDbType.NVarChar).Value = username;
+            command.Parameters.Add("@status", SqlDbType.Int).Value = status;
 
             command.ExecuteNonQuery();
 
@@ -117,10 +154,10 @@ namespace BookStore
 
         public int count()
         {
-            string sql = "SELECT COUNT(*) FROM ORDERS";
+            string sql = "SELECT MAX(ID) FROM ORDERS";
             var command = new SqlCommand(sql, _connection);
-
-            int count = (int)command.ExecuteScalar();
+            var result = command.ExecuteScalar();
+            int count = (result.ToString() != "")? (int)result:0 ;
             return count;
         }
 
@@ -132,6 +169,19 @@ namespace BookStore
             command.Parameters.Add("@id", SqlDbType.Int).Value = id;
             command.Parameters.Add("@totalPrice", SqlDbType.Int).Value = totalPrice;
             
+
+            command.ExecuteNonQuery();
+        }
+        public void updateOrder(int id,DateOnly date,string username,int totalPrice,int status) {
+            string sql = "UPDATE ORDERS SET date=@date,username=@username,totalPrice = @totalPrice,status=@status WHERE id=@id";
+
+            var command = new SqlCommand(sql, _connection);
+
+            command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+            command.Parameters.Add("@status", SqlDbType.Int).Value = status;
+            command.Parameters.Add("@totalPrice", SqlDbType.Int).Value = totalPrice;
+            command.Parameters.Add("@date", SqlDbType.Date).Value = date;
+            command.Parameters.Add("@username", SqlDbType.NVarChar).Value = username;
 
             command.ExecuteNonQuery();
         }

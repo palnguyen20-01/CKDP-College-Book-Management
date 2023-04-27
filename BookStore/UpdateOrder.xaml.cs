@@ -1,10 +1,9 @@
 ﻿using BookStore.View;
 using MahApps.Metro.Controls;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,70 +11,60 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
-using Button = System.Windows.Controls.Button;
-using MessageBox = System.Windows.MessageBox;
 
 namespace BookStore
 {
     /// <summary>
-    /// Interaction logic for AddNewOrder.xaml
+    /// Interaction logic for UpdateOrder.xaml
     /// </summary>
     /// 
-    class BookDetail : Book
-    {
-        public int quantity { get; set; }
-        public BookDetail() { }
-        public BookDetail(Book book,int quantity=1)
-        {
-            this.ID=book.ID;
-            this.Name=book.Name;
-            this.Image = book.Image;
-            this.Author=book.Author;
-            this.Publish=book.Publish;
-            this.Price=book.Price;
-            this.RawPrice=book.RawPrice;
-        this.CategoryID=book.CategoryID;
-            this.quantity = quantity;
-        }
-    }
 
-    class TotalPrice: INotifyPropertyChanged
-    {
-        public string _price;
-        public string total {
-            get { return _price; }
-            set { 
-                _price = value; 
-            PropertyChanged?.Invoke(this,new PropertyChangedEventArgs("TotalPrice"));
-            }
-        }
 
-        public event PropertyChangedEventHandler PropertyChanged;
-    }
-    public partial class AddNewOrder : MetroWindow
+
+    public partial class UpdateOrder : MetroWindow
     {
-        OrderDao dao=null;
+        Order currentOrder = null;
+        OrderDao dao = null;
+        OrderDetailDao orderDetailDao = null;
+
+        ObservableCollection<OrderDetail> orderDetail;
         ObservableCollection<BookDetail> books = new ObservableCollection<BookDetail>();
-        private int totalPrice=0;
-    TotalPrice _all=new TotalPrice();
-
         ObservableCollection<Status> statuses;
-        public AddNewOrder()
+
+
+        private int totalPrice = 0;
+        TotalPrice _all = new TotalPrice();
+        public UpdateOrder(Order oldOrder)
         {
             InitializeComponent();
             _all.total = "0";
             dao = new OrderDao();
+            orderDetailDao = new OrderDetailDao();
+            currentOrder = oldOrder;
+            this.DataContext = currentOrder;
             productsListView.ItemsSource = books;
             totalPriceTextBox.DataContext = _all;
 
-        StatusDao statusDao = new StatusDao();
-            statuses=statusDao.GetAll();
-            statusCombobox.ItemsSource=statuses;
+            StatusDao statusDao = new StatusDao();
+            statuses = statusDao.GetAll();
+            statusCombobox.ItemsSource = statuses;
+            statusCombobox.SelectedIndex = currentOrder.status - 1;
+            loadData();
+        }
+
+        private void loadData()
+        {
+            orderDetail= orderDetailDao.GetById(currentOrder.id);
+            foreach(OrderDetail detail in orderDetail)
+            {
+                Book temp = QLHangHoa._db.GetBook(detail.bookId);
+                books.Add(new BookDetail(temp, detail.quantity));
+            }
+            updateTotalPrice();
         }
 
         private void saveOrderBtn_Click(object sender, RoutedEventArgs e)
@@ -85,19 +74,19 @@ namespace BookStore
                 var dateTime = DateTime.Parse(dateTxt.Text);
 
                 var date = DateOnly.FromDateTime(dateTime);
-                string username=nameTxt.Text;
-                int newOrderId = dao.count() + 1;
+                string username = nameTxt.Text;
                 int status=statusCombobox.SelectedIndex+1;
-                dao.insert(newOrderId,date, username, int.Parse(_all.total), status);
 
-                OrderDetailDao orderDetailDao = new OrderDetailDao();
-               
-                foreach(BookDetail i in books)
+                dao.updateOrder(currentOrder.id, date,username, int.Parse(_all.total),status);
+
+                orderDetailDao.deleteAllByOrderId(currentOrder.id);
+
+                foreach (BookDetail i in books)
                 {
-                    orderDetailDao.insert(newOrderId, i.ID, i.quantity, int.Parse(i.Price));
+                    orderDetailDao.insert(currentOrder.id, i.ID, i.quantity, int.Parse(i.Price));
                 }
 
-                MessageBox.Show("Save successful !!!","Information",MessageBoxButton.OK, MessageBoxImage.Information);
+                MessageBox.Show("Update successful !!!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
                 this.DialogResult = true;
                 this.Close();
             }
@@ -133,11 +122,11 @@ namespace BookStore
 
             if (result == true)
             {
-                BookDetail temp=new BookDetail(bookList.choosenBook);
-                if (books.Any(p=> p.ID.Equals(temp.ID)))
+                BookDetail temp = new BookDetail(bookList.choosenBook);
+                if (books.Any(p => p.ID.Equals(temp.ID)))
                 {
 
-                    foreach(BookDetail i in books)
+                    foreach (BookDetail i in books)
                     {
                         if (i.ID.Equals(temp.ID))
                         {
@@ -146,9 +135,10 @@ namespace BookStore
                         }
                     }
 
-                    
-                }else
-                books.Add(temp);
+
+                }
+                else
+                    books.Add(temp);
                 addTotalPrice(temp.Price);
             }
         }
@@ -156,23 +146,23 @@ namespace BookStore
         private void addTotalPrice(string price)
         {
 
-                totalPrice += int.Parse(price);
-                _all.total=totalPrice.ToString();
+            totalPrice += int.Parse(price);
+            _all.total = totalPrice.ToString();
         }
 
         private void updateTotalPrice()
         {
-            totalPrice= 0;
-            BookDetail temp=null;
-            foreach(BookDetail book in books)
+            totalPrice = 0;
+            BookDetail temp = null;
+            foreach (BookDetail book in books)
             {
                 totalPrice += int.Parse(book.Price) * book.quantity;
                 if (book.quantity == 0)
                 {
-                   temp=book;
+                    temp = book;
                 }
             }
-            if(temp!=null) books.Remove(temp);
+            if (temp != null) books.Remove(temp);
             _all.total = totalPrice.ToString();
         }
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)

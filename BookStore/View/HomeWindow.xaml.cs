@@ -87,8 +87,7 @@ namespace BookStore.View
         }
         private void addOrderButton_Click(object sender, RoutedEventArgs e)
         {
-            AddNewOrder addNewOrder = new AddNewOrder();
-            addNewOrder.Show();
+            _orders.addOrder();
         }
 
         private void addProductButton_Click(object sender, RoutedEventArgs e)
@@ -126,6 +125,19 @@ namespace BookStore.View
             config.AppSettings.Settings["ClosedTab"].Value = tabs.SelectedIndex.ToString();
             config.Save(ConfigurationSaveMode.Full);
             ConfigurationManager.RefreshSection("appSettings");
+        }
+
+
+
+        private void deleteOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            _orders.deleteOrder();
+        }
+
+        private void updateOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            _orders.updateOrder();
+
         }
     }
 }

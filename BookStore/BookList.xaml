@@ -3,57 +3,46 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:BookStore"
+        xmlns:local="clr-namespace:BookStore" xmlns:local1="clr-namespace:BookStore.View"
         mc:Ignorable="d"
-         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
+         Title="Choose product" Height="450" Width="800" Loaded="Window_Loaded">
     <Window.Resources>
-        <local:RelativeToAbsoluteConverter x:Key="absolute"/>
+        <local1:RelativeToAbsoluteConverter x:Key="absolute"/>
+        <local1:CategoryConverter x:Key="category"/>
+        <local1:PriceConverter x:Key="price"/>
     </Window.Resources>
     <DockPanel LastChildFill="True">
-        <StackPanel Orientation="Horizontal" Height="50" DockPanel.Dock="Top">
-            <Button x:Name="addButton" Width="80" Height="35" Content="Add" Click="addButton_Click" />
-            <Button x:Name="deleteButton" Width="80" Height="35" Content="Delete" Click="deleteButton_Click"  HorizontalAlignment="Left" VerticalAlignment="Center"/>
-            <Button x:Name="updateButton" Width="80" Height="35" Content="Update" Click="updateButton_Click" HorizontalAlignment="Left" VerticalAlignment="Center"/>
-
-        </StackPanel>
-
-        <ListView Padding="10, 10, 0, 0" Name="booksComboBox" Width="627" Height="290"  HorizontalAlignment="Left" VerticalAlignment="Top" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+        <TextBlock Text="Choose product to add" FontSize="13" DockPanel.Dock="Top"/>
+        <ListView Padding="10, 10, 0, 0" Name="booksListView" Width="794" Height="384" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
             <ListView.ItemTemplate>
                 <DataTemplate>
-                    <StackPanel Orientation="Vertical">
-                        <Image RenderOptions.BitmapScalingMode="HighQuality" Margin="0, 0, 5, 0" Width="50" Height="50" Source="{Binding Image,Converter={StaticResource absolute}}"/>
-                        <TextBlock >
+                    <StackPanel Orientation="Vertical" Height="250" Width="248" Margin="22" >
+                        <Image RenderOptions.BitmapScalingMode="HighQuality" Width="100" Height="200" Source="{Binding Image,Converter={StaticResource absolute}}"/>
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
                         <Run Text="{Binding Name}" FontWeight="Bold" Foreground="Blue"/>
-                         - 
-                        <Run Text="{Binding Author}" Foreground="Red"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
+                        <Run Text="{Binding CategoryID, Converter={StaticResource category}}" FontWeight="Bold"/>
                          -
-                        <Run Text="{Binding Publish}" />
+                        <Run Text="{Binding Author}" FontWeight="Bold" Foreground="Red"/>
+                         -
+                        <Run Text="{Binding Publish}" FontWeight="Bold"/>
+                        </TextBlock>
+                        <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
+                        <Run Text="{Binding Price,Converter={StaticResource price}}" FontStyle="Italic" Foreground="DarkSlateGray"/>
                         </TextBlock>
                     </StackPanel>
                 </DataTemplate>
             </ListView.ItemTemplate>
             <ListView.ItemsPanel>
                 <ItemsPanelTemplate>
-                    <WrapPanel/>
+                    <WrapPanel />
                 </ItemsPanelTemplate>
             </ListView.ItemsPanel>
-            <ListView.Resources>
-                <ContextMenu x:Key="booksContextMenu">
-                    <MenuItem Header="Delete" Click="deleteItem_Click"/>
-                    <MenuItem Header="Edit" Click="editItem_Click"/>
-                    <MenuItem Header="View details" Click="viewItem_Click">
-                        <MenuItem.Icon>
-                            <Image RenderOptions.BitmapScalingMode="HighQuality" Source="Images/1.jpg"/>
-                        </MenuItem.Icon>
-                    </MenuItem>
-                </ContextMenu>
-            </ListView.Resources>
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}">
-                    <Setter Property="ContextMenu"
-                            Value="{StaticResource booksContextMenu}"/>
                     <EventSetter Event="MouseDoubleClick"
-                                 Handler="booksListView_MouseDoubleClick"/>
+                                 Handler="chooseProduct_MouseClick"/>
                 </Style>
             </ListView.ItemContainerStyle>
         </ListView>
