@@ -5,6 +5,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookStore.View"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
         mc:Ignorable="d"
         Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded"
@@ -114,7 +115,7 @@
                                 <TextBlock Text="{Binding maxPrice, Converter={StaticResource priceConverter}}"/>
                             </StackPanel>
                         </DockPanel>
-                        <Fluent:ComboBox Header="Type" Name="categoryCombobox" IsEditable="False" Width="150" HorizontalAlignment="Left" Margin="0 10 0 0">
+                        <Fluent:ComboBox Header="Type" SelectionChanged="currentProductCategoryComboBox_SelectionChanged" Name="currentProductCategoryComboBox" IsEditable="False" Width="150" HorizontalAlignment="Left" Margin="0 10 0 0">
                             <Fluent:ComboBox.Icon>
                                 <Image Source="../Assets/Icon/filter.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                             </Fluent:ComboBox.Icon>
@@ -128,11 +129,14 @@
                 </Fluent:RibbonGroupBox>
                 <Fluent:RibbonGroupBox Header="Search">
                     <StackPanel Orientation="Horizontal" Height="70">
-                        <Fluent:TextBox Width="150" VerticalAlignment="Center" Margin="0 0 10 0"/>
-                        <Fluent:Button Height="35">
+                        <Fluent:TextBox Name="searchProductTextBox" TextChanged="searchProductButton_Click" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.Watermark="Type to Search" Width="150" VerticalAlignment="Center" Margin="0 0 10 0"/>
+                        <Fluent:Button Height="35" Click="searchProductButton_Click">
                             <Fluent:Button.LargeIcon>
                                 <Image Source="../Assets/Icon/search.png" RenderOptions.BitmapScalingMode="HighQuality"/>
                             </Fluent:Button.LargeIcon>
+                            <Fluent:Button.ToolTip>
+                                <Fluent:ScreenTip Title="Search" Text="Search product by name"/>
+                            </Fluent:Button.ToolTip>
                         </Fluent:Button>
                     </StackPanel>
                 </Fluent:RibbonGroupBox>

@@ -40,14 +40,14 @@ namespace BookStore
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             //Read Book data
-            List<Book> _temp_books = QLHangHoa._db.getAllBooks();
+            List<Book> _temp_books = ProductDAO._db.getAllBooks();
             foreach (var book in _temp_books)
             {
                 _books.Add(book);
             }
 
             //Read Category data
-            List<Category> _temp_categories = QLHangHoa._db.getCategories();
+            List<Category> _temp_categories = ProductDAO._db.getCategories();
             foreach (var category in _temp_categories)
             {
                 _categories.Add(category);

@@ -72,11 +72,11 @@ namespace BookStore.View.Class
 
             return books;
         }
-
         public Book GetBook(int id)
         {
-           return Books.First(c => c.ID == id);
+            return Books.First(c => c.ID == id);
         }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

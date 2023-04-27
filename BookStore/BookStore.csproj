@@ -15,12 +15,19 @@
     <None Remove="Assets\Icon\delete.png" />
     <None Remove="Assets\Icon\excel.png" />
     <None Remove="Assets\Icon\filter.png" />
+    <None Remove="Assets\Icon\next.png" />
     <None Remove="Assets\Icon\open.png" />
+    <None Remove="Assets\Icon\previous.png" />
     <None Remove="Assets\Icon\save.png" />
     <None Remove="Assets\Icon\search.png" />
     <None Remove="Assets\Icon\uncheck.png" />
     <None Remove="Assets\Icon\update.png" />
     <None Remove="Images\0.jpg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\Icon\next.png" />
+    <Resource Include="Assets\Icon\previous.png" />
   </ItemGroup>
 
   <ItemGroup>

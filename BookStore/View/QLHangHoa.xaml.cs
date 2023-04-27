@@ -23,6 +23,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using Page = BookStore.View.Class.Page;
 
 namespace BookStore.View
 {
@@ -33,170 +34,58 @@ namespace BookStore.View
             InitializeComponent();
         }
 
-        public ObservableCollection<Category> _categories = null;
+        public static ProductDAO _productDAO = new ProductDAO();
 
-        ObservableCollection<Book> _books = null;
-        public static DBContext _db;
+        Page _page;
 
-        public Price _price = null;
+        ObservableCollection<Book> _books;
+
+        int _categoryIndex;
+
+        string _keyword;
 
         private void UserControl_Initialized(object sender, EventArgs e)
         {
-            _books = new ObservableCollection<Book>();
-            productListView.ItemsSource = _books;
-            _categories = new ObservableCollection<Category>() { new Category() { CategoryID = 0, CategoryName = "All" } };
-            _db = new DBContext();
-            if (!_db.Database.CanConnect())
-            {
-                System.Windows.Forms.MessageBox.Show("DB connection is bad");
-            }
-            
-            //Read Book data
-            List<Book> _temp_books = _db.getAllBooks();
-            foreach(var book in _temp_books)
-            {
-                _books.Add(book);
-            }
+            _page = new Page();
+            _categoryIndex = 0;
+            _keyword = "";
 
-            //Read Category data
-            List<Category> _temp_categories = _db.getCategories();
-            foreach(var category in _temp_categories)
-            {
-                _categories.Add(category);
-            }
+            updateDataSource(1);
+            updatePagingInfo();
 
-            //Read Price data
-            _price = new Price();
-            resetPrice();
-        }
-
-        public Price getPrice()
-        {
-            return _price;
+            currentProductPageComboBox.SelectedIndex = _page.currentPage - 1;
         }
 
         public void import()
         {
-            string filename = "";
-            Microsoft.Win32.OpenFileDialog openFileDialog = new Microsoft.Win32.OpenFileDialog();
-            openFileDialog.Filter = "Excel files (*.csv;*.xlsx)|*.csv;*.xlsx|All files (*.*)|*.*";
-            if (openFileDialog.ShowDialog() == true)
-            {
-                filename = openFileDialog.FileName;
-            }
-
-            if (filename.IsNullOrEmpty() || !filename.EndsWith(".xlsx")) return;
-
-            //delete _books
-            _books.Clear();
-
-            //delete _categories
-            _categories.Clear();
-
-            //delete db
-            _db.Categories.RemoveRange(_db.Categories);
-            _db.Books.RemoveRange(_db.Books);
-            _db.SaveChanges();
-
-            var document = SpreadsheetDocument.Open(filename, false);
-            var wbPart = document.WorkbookPart!;
-            var sheets = wbPart.Workbook.Descendants<Sheet>()!;
-
-            //Read Category Sheet
-            var sheet = sheets.FirstOrDefault(s => s.Name == "Category");
-            var wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
-            var stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
-            var cells = wsPart.Worksheet.Descendants<Cell>();
-
-            Cell idCell;
-            int row = 2;
-            do
-            {
-                idCell = cells.FirstOrDefault(c => c?.CellReference == $"A{row}")!;
-
-                if (idCell?.InnerText.Length > 0)
-                {
-                    Cell nameCell = cells.FirstOrDefault(c => c?.CellReference == $"B{row}")!;
-                    string nameID = nameCell!.InnerText;
-                    string name = stringTable.SharedStringTable.ElementAt(int.Parse(nameID)).InnerText;
-
-                    var category = new Category() { CategoryID = int.Parse(idCell.InnerText), CategoryName = name };
-                    _categories.Add(category);
-                    _db.insertCategory(category);
-                }
-                row++;
-
-            } while (idCell?.InnerText.Length > 0);
-
-            //Read Product Sheet
-            sheet = sheets.FirstOrDefault(s => s.Name == "Product");
-            wsPart = (WorksheetPart)(wbPart!.GetPartById(sheet.Id!));
-            stringTable = wbPart.GetPartsOfType<SharedStringTablePart>().FirstOrDefault()!;
-            cells = wsPart.Worksheet.Descendants<Cell>();
-            
-            row = 2;
-            do
-            {
-                idCell = cells.FirstOrDefault(c => c?.CellReference == $"A{row}")!;
-
-                if (idCell?.InnerText.Length > 0)
-                {
-                    Cell nameCell = cells.FirstOrDefault(c => c?.CellReference == $"B{row}")!;
-                    string nameID = nameCell!.InnerText;
-                    string name = stringTable.SharedStringTable.ElementAt(int.Parse(nameID)).InnerText;
-
-                    Cell imageCell = cells.FirstOrDefault(c => c?.CellReference == $"C{row}")!;
-                    string imageID = imageCell!.InnerText;
-                    string image = stringTable.SharedStringTable.ElementAt(int.Parse(imageID)).InnerText;
-
-                    Cell authorCell = cells.FirstOrDefault(c => c?.CellReference == $"D{row}")!;
-                    string authorID = authorCell!.InnerText;
-                    string author = stringTable.SharedStringTable.ElementAt(int.Parse(authorID)).InnerText;
-
-                    Cell publishCell = cells.FirstOrDefault(c => c?.CellReference == $"E{row}")!;
-                    string publish = publishCell!.InnerText;
-
-                    Cell categoryIDCell = cells.FirstOrDefault(c => c?.CellReference == $"F{row}")!;
-                    string categoryID = categoryIDCell!.InnerText;
-
-                    Cell priceCell = cells.FirstOrDefault(c => c?.CellReference == $"G{row}")!;
-                    string price = priceCell!.InnerText;
-
-                    Cell rawPriceCell = cells.FirstOrDefault(c => c?.CellReference == $"H{row}")!;
-                    string rawPrice = rawPriceCell!.InnerText;
-
-                    var book = new Book() { ID = int.Parse(idCell!.InnerText), Name = name, Author = author, Image = image, Publish = publish, CategoryID = int.Parse(categoryID), Price = price, RawPrice = rawPrice };
-                    _books.Add(book);
-                    _db.insertBook(book);
-                }
-                row++;
-
-            } while (idCell?.InnerText.Length > 0);
-            resetPrice();
+            _productDAO.import();
         }
 
-        private void resetPrice()
+        private void updateDataSource(int page)
         {
-            _price.maxPrice = _books.Max(book => int.Parse(book.Price));
-            _price.minPrice = _books.Min(book => int.Parse(book.Price));
-            _price.currentPrice = _price.maxPrice;
+            _page.currentPage = page;
+            (_books, _page.totalItems) = _productDAO.getAll(_page.currentPage, _page.rowsPerPage, _keyword, _categoryIndex, _productDAO._price.currentPrice);
+            productListView.ItemsSource = _books;
+        }
+
+        private void updatePagingInfo()
+        {
+            _page.totalPages = _page.totalItems / _page.rowsPerPage +
+                   (_page.totalItems % _page.rowsPerPage == 0 ? 0 : 1);
+
+            // Cập nhật ComboBox
+            var lines = new List<Tuple<int, int>>();
+            for (int i = 1; i <= _page.totalPages; i++)
+            {
+                lines.Add(new Tuple<int, int>(i, _page.totalPages));
+            }
+            currentProductPageComboBox.ItemsSource = lines;
         }
 
         public void addProduct()
         {
-            int productID = 1;
-            if(_books.Count > 0)
-            {
-                productID = _books.Last().ID + 1;
-            }
-            AddProduct addProduct = new AddProduct(productID, _categories);
-            bool? result = addProduct.ShowDialog();
-            if (result == true)
-            {
-                _books.Add(addProduct.book);
-                _db.insertBook(addProduct.book);
-                resetPrice();
-            }
+            _productDAO.addProduct();
+            updateDataSource(0);
         }
 
         public void deleteProduct()
@@ -205,63 +94,58 @@ namespace BookStore.View
             if (selectedBookIndex == -1) return;
             if (System.Windows.MessageBox.Show("Do you want to delete this product?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
-                _db.deleteBook(_books[selectedBookIndex]);
-                _books.RemoveAt(selectedBookIndex);
-                resetPrice();
+                _productDAO.deleteProduct(_books[selectedBookIndex].ID);
+                updateDataSource(_page.currentPage);
             }
-
         }
 
         public void updateProduct()
         {
             int selectedBookIndex = productListView.SelectedIndex;
             if (selectedBookIndex == -1) return;
-            UpdateProduct updateProduct = new UpdateProduct(_books[selectedBookIndex], _categories);
-            bool? result = updateProduct.ShowDialog();
-            if (result == true)
-            {
-                _books[selectedBookIndex] = updateProduct.book;
-                _db.updateBook(_books[selectedBookIndex]);
-                resetPrice();
-            }
+            _productDAO.updateProduct(_books[selectedBookIndex].ID);
+            updateDataSource(_page.currentPage);
+        }
+
+        public void searchProduct(string keyword)
+        {
+            _keyword = keyword;   
+            updateDataSource(1);
+            updatePagingInfo();
+
+            currentProductPageComboBox.SelectedIndex = _page.currentPage - 1;
+        }
+
+        public void updatePrice()
+        {
+            updateDataSource(1);
+            updatePagingInfo();
+
+            currentProductPageComboBox.SelectedIndex = _page.currentPage - 1;
+        }
+
+        public void filterCategory(int categoryID)
+        {
+            _categoryIndex = categoryID;
+            updateDataSource(1);
+            updatePagingInfo();
+
+            currentProductPageComboBox.SelectedIndex = _page.currentPage - 1;
         }
 
         public void addCategory()
         {
-            int categoryID = 1;
-            if (_categories.Count > 0)
-            {
-                categoryID = _categories.Last().CategoryID + 1;
-            }
-            AddCategory addCategory = new AddCategory(categoryID);
-            bool? result = addCategory.ShowDialog();
-            if (result == true)
-            {
-                _categories.Add(addCategory.category);
-                _db.insertCategory(addCategory.category);
-            }
+            _productDAO.addCategory();
         }
 
         public void deleteCategory()
         {
-            DeleteCategory deleteCategory = new DeleteCategory(_categories);
-            bool? result = deleteCategory.ShowDialog();
-            if (result == true)
-            {
-                _db.deleteCategory(_categories[deleteCategory.selectedCategoryIndex]);
-                _categories.RemoveAt(deleteCategory.selectedCategoryIndex);
-            }
+            _productDAO.deleteCategory();
         }
 
         public void updateCategory()
         {
-            UpdateCategory updateCategory = new UpdateCategory(_categories);
-            bool? result = updateCategory.ShowDialog();
-            if (result == true)
-            {
-                _categories[updateCategory.selectedCategoryIndex] = updateCategory.category;
-                _db.updateCategory(updateCategory.selectedCategoryIndex);
-            }
+            _productDAO.updateCategory();
         }
 
         private void deleteProduct_MouseClick(object sender, RoutedEventArgs e)
@@ -272,6 +156,34 @@ namespace BookStore.View
         private void updateProduct_MouseClick(object sender, RoutedEventArgs e)
         {
             updateProduct();
+        }
+
+        private void currentProductPageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (currentProductPageComboBox.SelectedIndex >= 0)
+            {
+                _page.currentPage = currentProductPageComboBox.SelectedIndex + 1;
+
+                updateDataSource(_page.currentPage);
+            }
+        }
+
+        private void previousProductPageClick(object sender, RoutedEventArgs e)
+        {
+            if (currentProductPageComboBox.SelectedIndex > 0)
+            {
+                currentProductPageComboBox.SelectedIndex--;
+                updateDataSource(_page.currentPage);
+            }
+        }
+
+        private void nextProductPageCLick(object sender, RoutedEventArgs e)
+        {
+            if (currentProductPageComboBox.SelectedIndex < _page.totalPages - 1)
+            {
+                currentProductPageComboBox.SelectedIndex++;
+                updateDataSource(_page.currentPage);
+            }
         }
     }
 }

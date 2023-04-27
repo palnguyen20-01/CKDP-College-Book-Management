@@ -26,13 +26,18 @@ namespace BookStore
     public partial class UpdateProduct : MetroWindow
     {
         public Book book;
-        ObservableCollection<Category> categories;
+        List<Category> categories;
         FileInfo _selectedImage;
         public UpdateProduct(Book current_book, ObservableCollection<Category> categories_list)
         {
             InitializeComponent();
             book = current_book;
-            categories = categories_list;
+            categories = new List<Category>();
+            foreach (Category category in categories_list)
+            {
+                if (category.CategoryName != "All")
+                    categories.Add(category);
+            }
             productDataUpdateWindow.DataContext = book;
             productCategoryCombobox.ItemsSource = categories;
             productCategoryCombobox.SelectedIndex = book.CategoryID - 1;

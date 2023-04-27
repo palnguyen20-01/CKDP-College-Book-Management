@@ -76,7 +76,8 @@ namespace BookStore
                 book.Publish.IsNullOrEmpty() ||
                 book.Price.IsNullOrEmpty() ||
                 book.RawPrice.IsNullOrEmpty() ||
-                productCategoryCombobox.SelectedIndex < 0
+                productCategoryCombobox.SelectedIndex < 0 ||
+                _selectedImage == null
             ){
                 MessageBox.Show("Please enter full information!!!");
                 return;

@@ -1,4 +1,5 @@
 ﻿using BookStore.View;
+using BookStore.View.Class;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections;
@@ -61,7 +62,7 @@ namespace BookStore
             orderDetail= orderDetailDao.GetById(currentOrder.id);
             foreach(OrderDetail detail in orderDetail)
             {
-                Book temp = QLHangHoa._db.GetBook(detail.bookId);
+                Book temp = ProductDAO._db.GetBook(detail.bookId);
                 books.Add(new BookDetail(temp, detail.quantity));
             }
             updateTotalPrice();

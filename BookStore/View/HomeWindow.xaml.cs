@@ -51,9 +51,9 @@ namespace BookStore.View
             };
             tabs.ItemsSource = screens;
 
-            categoryCombobox.ItemsSource = _product._categories;
+            currentProductCategoryComboBox.ItemsSource = QLHangHoa._productDAO._categories;
 
-            priceSliderDockPanel.DataContext = _product._price;
+            priceSliderDockPanel.DataContext = QLHangHoa._productDAO._price;
 
             string closedTab = ConfigurationManager.AppSettings["ClosedTab"]!;
             if (closedTab.Length > 0)
@@ -77,7 +77,8 @@ namespace BookStore.View
         private void priceSlider_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             int newValue = (int)priceSlider.Value;
-            _product._price.currentPrice = newValue;
+            QLHangHoa._productDAO._price.currentPrice = newValue;
+            _product.updatePrice();
             PriceValueChanged?.Invoke(newValue);
         }
 
@@ -88,6 +89,17 @@ namespace BookStore.View
         private void addOrderButton_Click(object sender, RoutedEventArgs e)
         {
             _orders.addOrder();
+        }
+
+        private void deleteOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            _orders.deleteOrder();
+        }
+
+        private void updateOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            _orders.updateOrder();
+
         }
 
         private void addProductButton_Click(object sender, RoutedEventArgs e)
@@ -109,15 +121,27 @@ namespace BookStore.View
         {
             _product.addCategory();
         }
-
+        
         private void deleteCategoryButton_Click(object sender, RoutedEventArgs e)
         {
             _product.deleteCategory();
         }
+
         private void updateCategoryButton_Click(object sender, RoutedEventArgs e)
         {
             _product.updateCategory();
         }
+
+        private void searchProductButton_Click(object sender, RoutedEventArgs e)
+        {
+            _product.searchProduct(searchProductTextBox.Text);
+        }
+
+        private void currentProductCategoryComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            _product.filterCategory(currentProductCategoryComboBox.SelectedIndex);
+        }
+
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
             var config = ConfigurationManager.OpenExeConfiguration(
@@ -127,17 +151,5 @@ namespace BookStore.View
             ConfigurationManager.RefreshSection("appSettings");
         }
 
-
-
-        private void deleteOrderButton_Click(object sender, RoutedEventArgs e)
-        {
-            _orders.deleteOrder();
-        }
-
-        private void updateOrderButton_Click(object sender, RoutedEventArgs e)
-        {
-            _orders.updateOrder();
-
-        }
     }
 }
