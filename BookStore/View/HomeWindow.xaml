@@ -7,6 +7,8 @@
         xmlns:local="clr-namespace:BookStore.View"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         xmlns:Fluent="clr-namespace:Fluent;assembly=Fluent"
+
+                     
         mc:Ignorable="d"
         Title="Dashboard" Height="450" Width="800" Loaded="RibbonWindow_Loaded"
                      WindowStyle="None"  
@@ -167,6 +169,16 @@
                         <Fluent:Button.ToolTip>
                             <Fluent:ScreenTip Title="Update" Text="Update order"/>
                         </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
+                <Fluent:RibbonGroupBox Header="Filter" Width="260">
+                    <DatePicker x:Name="fromDateTxt" SelectedDateChanged="fromDateTxt_SelectedDateChanged" FontSize="11" Height="40" mah:TextBoxHelper.Watermark="From Date" mah:TextBoxHelper.UseFloatingWatermark="True"/>
+                    <DatePicker x:Name="toDateTxt" SelectedDateChanged="toDateTxt_SelectedDateChanged" FontSize="11" Height="40" mah:TextBoxHelper.Watermark="To Date" mah:TextBoxHelper.UseFloatingWatermark="True"/>
+                    <Fluent:Button Header="Clear" Click="clearFilterOrderButton_Click">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/cleaning.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+  
                     </Fluent:Button>
                 </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>

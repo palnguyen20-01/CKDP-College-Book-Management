@@ -1,4 +1,5 @@
 ﻿using BookStore.View;
+using BookStore.View.Class;
 using MahApps.Metro.Controls;
 using System;
 using System.Collections.Generic;
@@ -41,6 +42,7 @@ namespace BookStore
             this.RawPrice=book.RawPrice;
         this.CategoryID=book.CategoryID;
             this.quantity = quantity;
+            this.Quantity = book.Quantity;
         }
     }
 
@@ -95,6 +97,9 @@ namespace BookStore
                 foreach(BookDetail i in books)
                 {
                     orderDetailDao.insert(newOrderId, i.ID, i.quantity, int.Parse(i.Price));
+                    i.Quantity = (int.Parse(i.Quantity) - i.quantity).ToString();
+                    ProductDAO._db.updateQuantityBook(i.ID, i.Quantity);
+
                 }
 
                 MessageBox.Show("Save successful !!!","Information",MessageBoxButton.OK, MessageBoxImage.Information);
@@ -149,6 +154,7 @@ namespace BookStore
                     
                 }else
                 books.Add(temp);
+     
                 addTotalPrice(temp.Price);
             }
         }
@@ -166,11 +172,23 @@ namespace BookStore
             BookDetail temp=null;
             foreach(BookDetail book in books)
             {
-                totalPrice += int.Parse(book.Price) * book.quantity;
+
                 if (book.quantity == 0)
                 {
                    temp=book;
                 }
+                if(book.quantity > int.Parse(book.Quantity))
+                {
+                totalPrice += int.Parse(book.Price) * int.Parse(book.Quantity);
+
+                    book.quantity = int.Parse(book.Quantity);
+                }
+                else
+                {
+                totalPrice += int.Parse(book.Price) * book.quantity;
+
+                }
+               
             }
             if(temp!=null) books.Remove(temp);
             _all.total = totalPrice.ToString();

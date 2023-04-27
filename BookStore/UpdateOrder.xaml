@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:BookStore" xmlns:local1="clr-namespace:BookStore.View"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="Update Order" Height="700" Width="1024" Background="#FFD3FEFF">
     <mah:MetroWindow.Resources>
         <local:RelativeToAbsoluteConverter x:Key="absolute"/>
@@ -67,7 +68,7 @@
                             <GridViewColumn DisplayMemberBinding="{Binding Name}" Header="Name" Width="200"/>
                             <GridViewColumn DisplayMemberBinding="{Binding Publish}" Header="Publish" Width="80" />
                             <GridViewColumn DisplayMemberBinding="{Binding Author}" Header="Author" Width="200"/>
-                            <GridViewColumn DisplayMemberBinding="{Binding Price,Converter={StaticResource priceConverter}}" Header="Price" Width="100"/>
+                            <GridViewColumn DisplayMemberBinding="{Binding Price,Converter={StaticResource priceConverter}}" Header="Unit Price" Width="100"/>
                             <GridViewColumn Header="Quantity" Width="150">
                                 <GridViewColumn.CellTemplate>
                                     <DataTemplate>

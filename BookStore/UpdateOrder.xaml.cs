@@ -64,8 +64,9 @@ namespace BookStore
             {
                 Book temp = ProductDAO._db.GetBook(detail.bookId);
                 books.Add(new BookDetail(temp, detail.quantity));
+
             }
-            updateTotalPrice();
+            updateTotalPrice(0);
         }
 
         private void saveOrderBtn_Click(object sender, RoutedEventArgs e)
@@ -85,6 +86,9 @@ namespace BookStore
                 foreach (BookDetail i in books)
                 {
                     orderDetailDao.insert(currentOrder.id, i.ID, i.quantity, int.Parse(i.Price));
+                    i.Quantity = (int.Parse(i.Quantity) - i.quantity).ToString();
+
+                    ProductDAO._db.updateQuantityBook(i.ID, i.Quantity);
                 }
 
                 MessageBox.Show("Update successful !!!", "Information", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -146,21 +150,37 @@ namespace BookStore
 
         private void addTotalPrice(string price)
         {
-
             totalPrice += int.Parse(price);
             _all.total = totalPrice.ToString();
         }
 
-        private void updateTotalPrice()
+        private void updateTotalPrice(int mode=1)
         {
             totalPrice = 0;
             BookDetail temp = null;
             foreach (BookDetail book in books)
             {
-                totalPrice += int.Parse(book.Price) * book.quantity;
                 if (book.quantity == 0)
                 {
                     temp = book;
+                }
+                if(mode==1)
+                {
+                if (book.quantity > int.Parse(book.Quantity))
+                {
+                    totalPrice += int.Parse(book.Price) * int.Parse(book.Quantity);
+
+                    book.quantity = int.Parse(book.Quantity);
+                }
+                else
+                {
+                    totalPrice += int.Parse(book.Price) * book.quantity;
+                }
+                }
+                else
+                {
+                    book.Quantity=book.quantity.ToString();
+                    totalPrice += int.Parse(book.Price) * book.quantity;
                 }
             }
             if (temp != null) books.Remove(temp);

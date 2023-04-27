@@ -12,6 +12,7 @@
     <None Remove="Assets\Icon\add.png" />
     <None Remove="Assets\Icon\browse.png" />
     <None Remove="Assets\Icon\check.png" />
+    <None Remove="Assets\Icon\cleaning.png" />
     <None Remove="Assets\Icon\delete.png" />
     <None Remove="Assets\Icon\excel.png" />
     <None Remove="Assets\Icon\filter.png" />
@@ -26,6 +27,9 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Assets\Icon\cleaning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Assets\Icon\next.png" />
     <Resource Include="Assets\Icon\previous.png" />
   </ItemGroup>

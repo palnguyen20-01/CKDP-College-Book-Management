@@ -74,7 +74,13 @@ namespace BookStore.View.Class
         }
         public Book GetBook(int id)
         {
-            return Books.First(c => c.ID == id);
+            return Books.First(c => c.ID == id );
+        }
+
+        public void updateQuantityBook(int id,string quantity)
+        {
+            Books.First(c=>c.ID==id).Quantity = quantity;
+            SaveChanges();
         }
 
 

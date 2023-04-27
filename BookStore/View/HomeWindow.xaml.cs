@@ -151,5 +151,54 @@ namespace BookStore.View
             ConfigurationManager.RefreshSection("appSettings");
         }
 
+
+        private void clearFilterOrderButton_Click(object sender, RoutedEventArgs e)
+        {
+            fromDateTxt.Text = "";
+            toDateTxt.Text = "";
+            _orders.filterOrder(null, null);
+
+
+        }
+
+        private void fromDateTxt_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (fromDateTxt.Text != "" && toDateTxt.Text != "")
+            {
+                var dateTime = DateTime.Parse(fromDateTxt.Text);
+
+                var fromDate = DateOnly.FromDateTime(dateTime);
+
+                dateTime = DateTime.Parse(toDateTxt.Text);
+
+                var toDate = DateOnly.FromDateTime(dateTime);
+
+                _orders.filterOrder(fromDate, toDate);
+            }
+            else
+            {
+                _orders.filterOrder(null, null);
+            }
+        }
+
+        private void toDateTxt_SelectedDateChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (fromDateTxt.Text != "" && toDateTxt.Text != "")
+            {
+                var dateTime = DateTime.Parse(fromDateTxt.Text);
+
+                var fromDate = DateOnly.FromDateTime(dateTime);
+
+                dateTime = DateTime.Parse(toDateTxt.Text);
+
+                var toDate = DateOnly.FromDateTime(dateTime);
+
+                _orders.filterOrder(fromDate, toDate);
+            }
+            else
+            {
+                _orders.filterOrder(null, null);
+            }
+        }
     }
 }

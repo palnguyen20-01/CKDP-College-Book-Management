@@ -31,29 +31,30 @@ namespace BookStore
     {
         public OrderDetailDao()
         {
-            this.connectDb();
+            //this.connectDb();
+            _connection = MainWindow._connection;
         }
         public SqlConnection _connection;
 
-        private void connectDb()
-        {
-            string connectionString = $"""
-                Server = .\sqlexpress;
-                Database = BookStore;
-                TrustServerCertificate=True;
-                Trusted_Connection=true;                
-                """;
-            _connection = new SqlConnection(connectionString);
-            try
-            {
-                _connection.Open();
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(
-                    $"Cannot connect to database. Reason: {ex.Message}");
-            }
-        }
+        //private void connectDb()
+        //{
+        //    string connectionString = $"""
+        //        Server = .\sqlexpress;
+        //        Database = BookStore;
+        //        TrustServerCertificate=True;
+        //        Trusted_Connection=true;                
+        //        """;
+        //    _connection = new SqlConnection(connectionString);
+        //    try
+        //    {
+        //        _connection.Open();
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        MessageBox.Show(
+        //            $"Cannot connect to database. Reason: {ex.Message}");
+        //    }
+        //}
 
         public ObservableCollection<OrderDetail> GetAll()
         {
@@ -127,7 +128,7 @@ namespace BookStore
             command.Parameters.Add("@orderId", SqlDbType.Int).Value = orderId;
             command.Parameters.Add("@bookId", SqlDbType.Int).Value = bookId;
             command.Parameters.Add("@quantity", SqlDbType.Int).Value = quantity;
-            command.Parameters.Add("@price", SqlDbType.Int).Value = price;
+            command.Parameters.Add("@price", SqlDbType.Int).Value = price*quantity;
 
             command.ExecuteNonQuery();
         }

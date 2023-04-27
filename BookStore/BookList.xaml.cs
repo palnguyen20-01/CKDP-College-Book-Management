@@ -41,7 +41,8 @@ namespace BookStore
         {
             //Read Book data
             List<Book> _temp_books = ProductDAO._db.getAllBooks();
-            foreach (var book in _temp_books)
+            var list=_temp_books.Where(c => int.Parse(c.Quantity) > 0);
+            foreach (var book in list)
             {
                 _books.Add(book);
             }

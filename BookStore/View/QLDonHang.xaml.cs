@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,7 +23,7 @@ namespace BookStore.View
     public partial class QLDonHang : UserControl
     {
 
-        ObservableCollection<Order> _orders;
+        List<Order> _orders;
         OrderDao orderDao;
         public QLDonHang()
         {
@@ -30,7 +31,10 @@ namespace BookStore.View
             orderDao = new OrderDao();
             
             updateOrderList();
+            _updateDataSource(1);
+            _updatePagingInfo();
 
+            currentPageComboBox.SelectedIndex = _currentPage - 1;
         }
 
         private void DeleteOrderButton_Click(object sender, RoutedEventArgs e)
@@ -51,6 +55,7 @@ namespace BookStore.View
             if (System.Windows.MessageBox.Show("Do you want to delete this order?", "Confirmation", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
             {
                 deleteItem(_orders[index]);
+
             }
         }
 
@@ -60,6 +65,7 @@ namespace BookStore.View
             dao.deleteAllByOrderId(order.id);
             orderDao.delete(order.id);
             _orders.Remove(order);
+            updateOrderList();
 
         }
 
@@ -102,9 +108,145 @@ namespace BookStore.View
 
         public void updateOrderList()
         {
-            _orders = orderDao.GetAll();
+            _orders = orderDao.GetAll().ToList();
             ordersListView.ItemsSource = _orders;
 
+            _updateDataSource(1);
+            _updatePagingInfo();
+
+            currentPageComboBox.SelectedIndex = _currentPage - 1;
+        }
+
+        int _currentPage = 1;
+        int _rowsPerPage = 5;
+        int _totalItems = 0;
+        int _totalPages = 0;
+
+        private void currentPageComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (currentPageComboBox.SelectedIndex >= 0)
+            {
+                _currentPage = currentPageComboBox.SelectedIndex + 1;
+
+                _updateDataSource(_currentPage);
+            }
+        }
+
+        private void _updateDataSource(int page, DateOnly? fromDate=null,DateOnly? toDate=null)
+        {
+            _currentPage = page;
+            (_orders, _totalItems) = GetPagination(
+                _currentPage, _rowsPerPage, fromDate,toDate);
+            ordersListView.ItemsSource = _orders;
+            if (_totalPages == 1)
+            {
+                previousPageButton.IsEnabled = false;
+                nextPageButton.IsEnabled = false;
+            }
+            else if (currentPageComboBox.SelectedIndex == 0)
+            {
+                previousPageButton.IsEnabled = false;
+                nextPageButton.IsEnabled = true;
+
+            }
+            else if (currentPageComboBox.SelectedIndex + 1 == _totalPages)
+            {
+                nextPageButton.IsEnabled = false;
+                previousPageButton.IsEnabled = true;
+            }
+            else
+            {
+                previousPageButton.IsEnabled = true;
+                nextPageButton.IsEnabled = true;
+            }
+        }
+        private void _updatePagingInfo()
+        {
+            _totalPages = _totalItems / _rowsPerPage +
+                   (_totalItems % _rowsPerPage == 0 ? 0 : 1);
+
+            // Cập nhật ComboBox
+            var lines = new List<Tuple<int, int>>();
+            for (int i = 1; i <= _totalPages; i++)
+            {
+                lines.Add(new Tuple<int, int>(i, _totalPages));
+            }
+            currentPageComboBox.ItemsSource = lines;
+        }
+
+        public Tuple<List<Order>, int> GetPagination(
+               int currentPage = 1, int rowsPerPage = 10,DateOnly? fromDate=null, DateOnly? toDate=null)
+        {
+            var origin = orderDao.GetAll();
+            if(fromDate==null || toDate == null) {
+               
+
+                var items1 = origin.Skip((currentPage - 1) * rowsPerPage)
+                    .Take(rowsPerPage);
+
+                // Trang i - Skip((i-1) * rowsPerPage ) Take(rowsPerPage)
+                var result1 = new Tuple<List<Order>, int>(
+                    items1.ToList(), origin.Count()
+                );
+                return result1;
+            }
+            else
+            {
+            var list = origin.Where(
+                item => (item.date>=fromDate && item.date<= toDate)
+            );
+           
+            var items = list.Skip((currentPage - 1) * rowsPerPage)
+                .Take(rowsPerPage);
+
+            // Trang i - Skip((i-1) * rowsPerPage ) Take(rowsPerPage)
+            var result = new Tuple<List<Order>, int>(
+                items.ToList(), list.Count()
+            );
+            return result;
+
+            }
+        }
+
+        private void nextPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentPageComboBox.SelectedIndex += 1;
+            previousPageButton.IsEnabled = true;
+            if (currentPageComboBox.SelectedIndex + 1 == _totalPages)
+            {
+                nextPageButton.IsEnabled = false;
+            }
+            if (currentPageComboBox.SelectedIndex >= 0)
+            {
+                _currentPage = currentPageComboBox.SelectedIndex + 1;
+
+                _updateDataSource(_currentPage);
+            }
+        }
+
+        private void previousPageButton_Click(object sender, RoutedEventArgs e)
+        {
+            currentPageComboBox.SelectedIndex -= 1;
+
+            nextPageButton.IsEnabled = true;
+            if (currentPageComboBox.SelectedIndex == 0)
+            {
+                previousPageButton.IsEnabled = false;
+            }
+            if (currentPageComboBox.SelectedIndex >= 0)
+            {
+                _currentPage = currentPageComboBox.SelectedIndex + 1;
+
+                _updateDataSource(_currentPage);
+            }
+        }
+
+        public void filterOrder(DateOnly? fromDate, DateOnly? toDate)
+        {
+            _updateDataSource(1,fromDate,toDate);
+            _updatePagingInfo();
+
+            currentPageComboBox.SelectedIndex = _currentPage - 1;
         }
     }
 }
