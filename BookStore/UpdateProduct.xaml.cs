@@ -67,6 +67,7 @@ namespace BookStore
                 book.Publish.IsNullOrEmpty() ||
                 book.Price.IsNullOrEmpty() ||
                 book.RawPrice.IsNullOrEmpty() ||
+                book.Quantity.IsNullOrEmpty() ||
                 productCategoryCombobox.SelectedIndex < 0
             )
             {

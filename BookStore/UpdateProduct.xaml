@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:BookStore"
         xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
         mc:Ignorable="d"
-        Title="Update Product" Height="600" Width="300" Background="#FFD3FEFF">
+        Title="Update Product" Height="660" Width="300" Background="#FFD3FEFF">
     <mah:MetroWindow.Resources>
         <local:RelativeToAbsoluteConverter x:Key="absolute"/>
     </mah:MetroWindow.Resources>
@@ -14,6 +14,7 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="0.5*"/>
             <RowDefinition Height="3*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="*"/>
@@ -61,7 +62,11 @@
             <Label DockPanel.Dock="Top" Margin="5 0 0 0" Content="Raw Price" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" FontFamily="Century"/>
             <TextBox Text="{Binding RawPrice}" DockPanel.Dock="Bottom" Margin="10 0 10 0" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.Watermark="100000"></TextBox>
         </DockPanel>
-        <Grid Grid.Row="8">
+        <DockPanel Grid.Row="8">
+            <Label DockPanel.Dock="Top" Margin="5 0 0 0" Content="Quantity" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="14" FontFamily="Century"/>
+            <TextBox Text="{Binding Quantity}" DockPanel.Dock="Bottom" Margin="10 0 10 0" mah:TextBoxHelper.ClearTextButton="True" mah:TextBoxHelper.Watermark="500"></TextBox>
+        </DockPanel>
+        <Grid Grid.Row="9">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>

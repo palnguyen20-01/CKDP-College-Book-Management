@@ -26,6 +26,7 @@ namespace BookStore
         public int CategoryID { get; set; }
         public string Price { get; set; }
         public string RawPrice { get; set; }
+        public string Quantity { get; set; }
         public virtual Category Category { get; set; }
 
         public event PropertyChangedEventHandler? PropertyChanged;

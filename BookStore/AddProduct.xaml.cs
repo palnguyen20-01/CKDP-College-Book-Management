@@ -40,7 +40,8 @@ namespace BookStore
                 Publish = "",
                 CategoryID = 1,
                 Price = "",
-                RawPrice = ""
+                RawPrice = "",
+                Quantity = ""
             };
 
             categories = new List<Category>();
@@ -76,6 +77,7 @@ namespace BookStore
                 book.Publish.IsNullOrEmpty() ||
                 book.Price.IsNullOrEmpty() ||
                 book.RawPrice.IsNullOrEmpty() ||
+                book.Quantity.IsNullOrEmpty() ||
                 productCategoryCombobox.SelectedIndex < 0 ||
                 _selectedImage == null
             ){

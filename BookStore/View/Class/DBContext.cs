@@ -108,6 +108,7 @@ namespace BookStore.View.Class
                 entity.Property(e => e.CategoryID).HasColumnName("categoryid");
                 entity.Property(e => e.Price).HasColumnName("price");
                 entity.Property(e => e.RawPrice).HasColumnName("rawprice");
+                entity.Property(e => e.Quantity).HasColumnName("quantity");
 
                 entity.HasOne(d => d.Category).WithMany(p => p.Books).HasForeignKey(d => d.CategoryID).HasConstraintName("FK_Book_Category");
             });

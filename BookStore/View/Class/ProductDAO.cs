@@ -166,7 +166,10 @@ namespace BookStore.View.Class
                     Cell rawPriceCell = cells.FirstOrDefault(c => c?.CellReference == $"H{row}")!;
                     string rawPrice = rawPriceCell!.InnerText;
 
-                    var book = new Book() { ID = int.Parse(idCell!.InnerText), Name = name, Author = author, Image = image, Publish = publish, CategoryID = int.Parse(categoryID), Price = price, RawPrice = rawPrice };
+                    Cell quantityCell = cells.FirstOrDefault(c => c?.CellReference == $"I{row}")!;
+                    string quantity = quantityCell!.InnerText;
+
+                    var book = new Book() { ID = int.Parse(idCell!.InnerText), Name = name, Author = author, Image = image, Publish = publish, CategoryID = int.Parse(categoryID), Price = price, RawPrice = rawPrice, Quantity = quantity };
                     _books.Add(book);
                     _db.insertBook(book);
                 }
