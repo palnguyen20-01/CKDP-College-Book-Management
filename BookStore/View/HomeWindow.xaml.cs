@@ -200,5 +200,12 @@ namespace BookStore.View
                 _orders.filterOrder(null, null);
             }
         }
+
+        private void BackstageTabItem_ChangePassword(object sender, MouseButtonEventArgs e)
+        {
+            ChangePassword cp = new ChangePassword();
+            bool? result = cp.ShowDialog();
+            
+        }
     }
 }

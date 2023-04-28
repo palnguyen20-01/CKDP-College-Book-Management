@@ -28,6 +28,9 @@
                                 <TextBox Width="200" Height="35"/>
                             </StackPanel>
                         </Fluent:BackstageTabItem>
+                        <Fluent:BackstageTabItem Header="Change password" MouseDown="BackstageTabItem_ChangePassword">
+
+                        </Fluent:BackstageTabItem>
                         <Fluent:BackstageTabItem Header="Quit" MouseDown="BackstageTabItem_MouseDown">
                             
                         </Fluent:BackstageTabItem>

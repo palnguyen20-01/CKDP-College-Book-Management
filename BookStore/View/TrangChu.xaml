@@ -5,7 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:BookStore.View"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800">
+             d:DesignHeight="450" d:DesignWidth="800"
+             Initialized="TrangChu_Initialized">
 
     <UserControl.Resources>
         <local:RelativeToAbsoluteConverter x:Key="absolute"/>
@@ -26,26 +27,36 @@
                 <TextBlock Text="Tổng số sản phẩm đang bán"
                            FontSize="15"
                            TextAlignment="Center"/>
-                <TextBlock FontSize="15" Text="0" TextAlignment="Center"/>
+                <TextBlock x:Name="totalProduct" Margin="0,5,0,0"
+                    FontSize="25" 
+                           Text="0" TextAlignment="Center"/>
             
             <StackPanel Margin="0,50,0,0"
                 HorizontalAlignment="Center">
                 <TextBlock FontSize="15" Text="Tổng đơn hàng mới trong tuần"/>
-                <TextBlock FontSize="15" Text="0" TextAlignment="Center"/>
+                <TextBlock x:Name="weekProduct" Margin="0,5,0,0"
+                    FontSize="25" Text="0" TextAlignment="Center"/>
+            </StackPanel>
+            <StackPanel Margin="0,50,0,0"
+                HorizontalAlignment="Center">
+                <TextBlock FontSize="15" Text="Tổng đơn hàng mới trong tháng"/>
+                <TextBlock x:Name="monthProduct" Margin="0,5,0,0"
+                    FontSize="25" Text="0" TextAlignment="Center"/>
             </StackPanel>
         </StackPanel>
 
 
         <StackPanel Grid.Row="0" Grid.Column="1"
                     Orientation="Vertical"
-                    Margin="10,30,0,0"
+                    Margin="10,10,0,0"
                     >
             <TextBlock Text="Các sản phẩm sắp hết hàng"
+                       FontSize="15"
                        TextAlignment="Center"/>
-            <ListView Name="productListView" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+            <ListView Name="productListViewTrangChu" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
                 <ListView.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Vertical" Height="250" Width="248">
+                        <StackPanel Orientation="Vertical" Height="300" Width="248">
                             <Image RenderOptions.BitmapScalingMode="HighQuality" Width="100" Height="200" Source="{Binding Image,Converter={StaticResource absolute}}"/>
                             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
                         <Run Text="{Binding Name}" FontWeight="Bold" Foreground="Blue"/>
@@ -59,6 +70,12 @@
                             </TextBlock>
                             <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
                         <Run Text="{Binding Price,Converter={StaticResource price}}" FontStyle="Italic" Foreground="DarkSlateGray"/>
+                            </TextBlock>
+
+                            <TextBlock TextWrapping="Wrap" HorizontalAlignment="Center">
+                        <Run Text="Số lượng còn lại "  FontWeight="Bold"/>
+                        <Run Text="{Binding Quantity}"  FontWeight="Bold"/>
+                                                 
                             </TextBlock>
                         </StackPanel>
                     </DataTemplate>

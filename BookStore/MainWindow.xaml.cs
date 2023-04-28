@@ -43,7 +43,7 @@ namespace BookStore
             string password = passwordBox.Password;
 
             string connectionString = $"""
-                Server = .\sqlexpress;
+                Server = .\CHIEN;
                 Database = BookStore;
                 TrustServerCertificate=True;
                 Trusted_Connection=true;                
@@ -89,7 +89,6 @@ namespace BookStore
 
                     config.AppSettings.Settings["Password"].Value = passwordIn64;
                     config.AppSettings.Settings["Entropy"].Value = entropyIn64;
-
 
 
                     config.Save(ConfigurationSaveMode.Full);

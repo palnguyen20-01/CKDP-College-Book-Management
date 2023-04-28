@@ -76,6 +76,16 @@ namespace BookStore.View.Class
             return new Tuple<ObservableCollection<Book>, int>(convertObservable(result), totalItems); 
         }
 
+  
+        public Tuple<ObservableCollection<Book>, int> getFiveOutOfStock()
+        {
+            //ObservableCollection<Book> result = new ObservableCollection<Book>();
+            var tmp = _books.OrderBy(item => item.Quantity);
+            var result = tmp.Where(item => int.Parse(item.Quantity) < 5).Skip(0).Take(5);
+            var totalProducts = tmp.Count();
+            return new Tuple<ObservableCollection<Book>, int>( convertObservable(result), totalProducts);
+        }
+
         public void import()
         {
             string filename = "";

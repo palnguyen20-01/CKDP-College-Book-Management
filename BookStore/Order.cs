@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office.Word;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
@@ -96,8 +97,57 @@ namespace BookStore
             reader.Close();
             return list;
         }
+        public int getOrdersMonth()
+        {
+            var date = DateTime.Now.ToString("M/d/yyyy");
+            var split = date.Split('/');
+            var current_month = split[0];
+            var current_year = split[2];
+            var list = new ObservableCollection<Order>();
+            string sql =
+                "select * from ORDERS where MONTH(date) = @current_month and YEAR(date) = @current_year";
 
-        public Order GetById(int Id)
+            var command = new SqlCommand(sql, _connection);
+
+            command.Parameters.Add("@current_month", SqlDbType.VarChar).Value = current_month;
+            command.Parameters.Add("@current_year", SqlDbType.VarChar).Value = current_year;
+
+            var reader = command.ExecuteReader();
+            int countMonth = 0;
+
+            while (reader.Read())
+            {
+                countMonth++;
+            }
+            reader.Close();
+            return countMonth;
+        }
+        public int getOrdersWeek()
+        {
+            var date = DateTime.Now.ToString("M/d/yyyy");
+            var split = date.Split('/');
+            var list = new ObservableCollection<Order>();
+            string sql =
+                "select id, DATEDIFF(week, date, CURRENT_TIMESTAMP) AS wm from ORDERS";
+
+            var command = new SqlCommand(sql, _connection);
+
+
+            var reader = command.ExecuteReader();
+            int countWeek = 0;
+
+            while (reader.Read())
+            {
+                if((int)reader["wm"] == 0)
+                {
+                    countWeek++;   
+                }
+            }
+            reader.Close();
+            return countWeek;
+        }
+
+            public Order GetById(int Id)
         {
             string sql =
                 "select * from ORDERS where id=@id";
