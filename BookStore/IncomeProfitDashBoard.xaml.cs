@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,10 +14,13 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Drawing.Charts;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using LiveCharts;
+using LiveCharts.Configurations;
 using LiveCharts.Defaults;
 using LiveCharts.Wpf;
 using Microsoft.Identity.Client;
@@ -29,30 +33,57 @@ namespace BookStore
     /// 
     public partial class IncomeProfitDashBoard : Window
     {
-        Random Random = new Random();  
+
+        Random Random = new Random();
         public Double randomInRange(Double min, Double max)
         {
             return Random.Next() % (max - min) + min;
         }
-        public string[] LabelColumns => new[] { "January", "February", "March", "April", "May","June","July" ,"August","September","October","November","December"};
-        public ChartValues<ObservableValue> GetAll(Double min, Double max)
+        RevenueProfitDAO RPDAO = new RevenueProfitDAO();
+        ChartValues<ObservableValue> ColumnUIRevenues = new ChartValues<ObservableValue>() {
+            new ObservableValue(0.7)
+        };
+        ChartValues<ObservableValue> ColumnUIProfits = new ChartValues<ObservableValue>(){
+            new ObservableValue(0.3)
+        };
+        public async void GetAll(string preiod)
         {
-            var  ColumnsUI = new ChartValues<ObservableValue>();
-            for (int i = 0;i < 12; i++)
+            try
             {
-                var numGen = randomInRange(min, max);
-                ColumnsUI.Add(new ObservableValue(numGen));
+
+                ObservableCollection<RevenueProfit> data = await Task.Run(() => RPDAO.GetAll(preiod));
+                ColumnUIRevenues.Clear();
+                ColumnUIProfits.Clear();
+                IPChart.AxisX.Clear();
+                List<string> TitleAxisX = new List<string>();
+                foreach (RevenueProfit p in data)
+                {
+
+                    ColumnUIRevenues.Add(new ObservableValue(p.Revenue));
+                    ColumnUIProfits.Add(new ObservableValue(p.Profit));
+                    TitleAxisX.Add(p.Preiod);
+
+
+                }
+                IPChart.AxisX.Add(new LiveCharts.Wpf.Axis
+                {
+                    Title = "Datetime",
+                    Labels = TitleAxisX,
+                });
             }
-        
-            return ColumnsUI;
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+
+            }
 
         }
-        ChartValues<ObservableValue> ColumnUIRevenues= null;
-        ChartValues<ObservableValue> ColumnUIProfits= null;
+
+
 
         public String ShowParseLabelRevenue(ChartPoint label)
         {
-            Double yRevenue =  label.Y;
+            Double yRevenue = label.Y;
 
             Double yProfit = ColumnUIProfits[Convert.ToInt32(label.X)].Value;
 
@@ -64,8 +95,9 @@ namespace BookStore
             Double MinProfit = ColumnUIProfits.Min(o => o.Value);
 
             if (yRevenue == MaxRevenue || yRevenue == MinRevenue ||
-                yProfit == MaxProfit || yProfit == MinProfit) {
-                return $"{yRevenue}";
+                yProfit == MaxProfit || yProfit == MinProfit)
+            {
+                return $"{yRevenue:F2}";
             };
             return "";
         }
@@ -84,7 +116,7 @@ namespace BookStore
             if (yRevenue == MaxRevenue || yRevenue == MinRevenue ||
                 yProfit == MaxProfit || yProfit == MinProfit)
             {
-                return $"{yRevenue}";
+                return $"{yProfit:F2}";
             };
             return "";
         }
@@ -97,7 +129,6 @@ namespace BookStore
                 Values = ColumnUIRevenues,
                 Fill = Brushes.DeepSkyBlue,
                 LabelPoint=ShowParseLabelRevenue,
-                //LabelPoint = label => Math.Abs(label.Y - ColumnUIProfits.Max(o => o.Value))<0.1 || Math.Abs(label.Y - ColumnUIProfits.Min(o => o.Value))<0.1 ? $"{label.Y}" : "??",
                 DataLabels=true
             },
              new ColumnSeries
@@ -106,32 +137,12 @@ namespace BookStore
                 Values = ColumnUIProfits,
                 Fill = Brushes.LightSeaGreen,
                 LabelPoint=ShowParseLabelProfit,
-
                 DataLabels=true
 
             }
         };
 
 
-        //public class ObservableValue : INotifyPropertyChanged, ICloneable
-        //{
-
-        //    public double value { get; set; }
-
-
-        //    public event PropertyChangedEventHandler? PropertyChanged;
-        //    public object Clone()
-        //    {
-        //        return MemberwiseClone();
-        //    }
-        //    protected virtual void OnPropertyChanged(string propertyName = null)
-        //    {
-        //        //Raise PropertyChanged event
-        //        if (PropertyChanged != null)
-        //            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(propertyName));
-        //    }
-
-        //}
 
 
         public ObservableValue CostUI = new ObservableValue(0.3);
@@ -159,8 +170,7 @@ namespace BookStore
         // todo load DAO
         private void ColumnSeries_OnDataClick(object sender, ChartPoint chartPoint)
         {
-            //var selectedSeries = (ColumnSeries)sender;
-            //var xvalue = chartpoint.x;
+
             try
             {
                 var Revenue = ColumnUIRevenues[chartPoint.Key].Value;
@@ -169,31 +179,33 @@ namespace BookStore
                 var Profitpc = Profit * 1.0 / Revenue;
                 CostUI.Value = Costpc;
                 ProfitUI.Value = Profitpc;
-                ColumnUIRevenues[chartPoint.Key].Value = 1;
 
             }
-            catch (Exception  ex) {
+            catch (Exception ex)
+            {
                 MessageBox.Show(ex.Message.ToString());
 
             }
 
-
-            //CostUI.Value = Costpc;
-            //ProfitUI.Value = Profitpc;
-
-
-
-            //var yValue1 = selectedSeries.Values[chartPoint.Key];
-            //var yValue2 = ((ColumnSeries)IPChart.Series[1]).Values[chartPoint.Key];
         }
         public IncomeProfitDashBoard()
         {
             InitializeComponent();
-            ColumnUIRevenues = GetAll(10.3,20.3);
-            ColumnUIProfits = GetAll(5.1,9.1);
+
             IPChart.DataClick += ColumnSeries_OnDataClick;
+            GetAll("year");
+
+
+
             DataContext = this;
         }
-       
+
+        private void ComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBox comboBox = (ComboBox)sender;
+            ComboBoxItem selectedItem = (ComboBoxItem)comboBox.SelectedItem;
+            string selectedOption = selectedItem.Content.ToString();
+            GetAll(selectedOption);
+        }
     }
 }

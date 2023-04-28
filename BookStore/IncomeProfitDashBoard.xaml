@@ -12,9 +12,8 @@
                             Series="{Binding ColumnSeriesCollection}" 
                             LegendLocation="Top" 
                             Canvas.Left="10" Canvas.Top="81" Height="236" Width="1190" HorizontalAlignment="Center" VerticalAlignment="Top">
-            <lvc:CartesianChart.AxisX>
-                <lvc:Axis Labels="{Binding LabelColumns}" />
-            </lvc:CartesianChart.AxisX>
+
+
         </lvc:CartesianChart>
         <lvc:PieChart Name="PieChart" 
                       Series="{Binding PieSeriesCollection}" 
@@ -23,9 +22,16 @@
                       Canvas.Left="396" Canvas.Top="342" Height="307" Width="404" RenderTransformOrigin="0.4,1.116" >
             <lvc:PieChart.ChartLegend>
                 <lvc:DefaultLegend BulletSize="25" TextBlock.FontSize="15"/>
-            </lvc:PieChart.ChartLegend>           
+            </lvc:PieChart.ChartLegend>
         </lvc:PieChart>
 
         <Label Content="Doanh Số Bán Hàng" Foreground="White" HorizontalContentAlignment="Center" Background="SteelBlue" Width="1200" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left"/>
+        <ComboBox Canvas.Left="10" SelectionChanged="ComboBox_SelectionChanged" Canvas.Top="34" Width="120" RenderTransformOrigin="0.328,-0.214">
+            <ComboBoxItem Content="day"/>
+            <ComboBoxItem Content="week"/>
+            <ComboBoxItem Content="month"/>
+            <ComboBoxItem Content="year" IsSelected="True"/>
+
+        </ComboBox>
     </Canvas>
 </Window>
