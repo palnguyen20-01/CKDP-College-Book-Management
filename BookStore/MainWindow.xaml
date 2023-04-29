@@ -19,6 +19,7 @@
         <Button Name="deleteButton" Width="80" Height="36" Content="Delete" Click="deleteButton_Click" Canvas.Left="185" Canvas.Top="344" HorizontalAlignment="Center" VerticalAlignment="Top"/>
         <Button Content="Home Window" Click="homeWindow_Click" Canvas.Left="400" Canvas.Top="136"/>
         <Button Content="Revenue Profit Dash Board" Click="RevenueProfitDashBoardWindow_Click" Canvas.Left="400" Canvas.Top="180" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+        <Button Content="Product Dash Board" Click="ProductDashBoardWindow_Click" Canvas.Left="400" Canvas.Top="238" HorizontalAlignment="Center" VerticalAlignment="Top"/>
 
     </Canvas>
 </Window>

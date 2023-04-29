@@ -194,9 +194,6 @@ namespace BookStore
 
             IPChart.DataClick += ColumnSeries_OnDataClick;
             GetAll("year");
-
-
-
             DataContext = this;
         }
 

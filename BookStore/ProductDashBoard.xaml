@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:BookStore"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"        
         mc:Ignorable="d"
-        Title="ProductDashBoard" Height="700" Width="1200">
+        Title="ProductDashBoard" Height="710" Width="1200">
     <Canvas>
         <lvc:CartesianChart Name="ProductChart" 
+                          
                             Series="{Binding ColumnSeriesCollection}" 
                             LegendLocation="Top" 
                             Canvas.Left="10" Canvas.Top="81" Height="236" Width="1190" HorizontalAlignment="Center" VerticalAlignment="Top">
@@ -17,6 +18,7 @@
         </lvc:CartesianChart>
         <lvc:PieChart Name="PieChart" 
                       Series="{Binding PieSeriesCollection}" 
+                      
                       LegendLocation="Right" 
                       InnerRadius="80"
                       Canvas.Left="10" Canvas.Top="367" Height="307" Width="404" RenderTransformOrigin="0.4,1.116" HorizontalAlignment="Left" VerticalAlignment="Top" >
@@ -25,21 +27,17 @@
             </lvc:PieChart.ChartLegend>
         </lvc:PieChart>
         <lvc:CartesianChart Name="BestSellerChart" 
-                            Series="{Binding ColumnSeriesCollection}" 
+                            Series="{Binding ColumnSeries2}" 
+                            DataClick="ChangePieChart"
                             LegendLocation="Top" 
                             Canvas.Left="464" Canvas.Top="367" Height="307" Width="726" HorizontalAlignment="Center" VerticalAlignment="Top">
 
 
         </lvc:CartesianChart>
         <Label Content="Doanh Số Sản Phẩm" Foreground="White" HorizontalContentAlignment="Center" Background="SteelBlue" Width="1200" VerticalAlignment="Center" FontSize="14" HorizontalAlignment="Left"/>
-        <Label Content="Top 5 Best Seller" Foreground="Black" HorizontalContentAlignment="Center"  Width="1200" VerticalAlignment="Top" FontSize="15" HorizontalAlignment="Center" Canvas.Top="333"/>
+        <Label Content="Top 3 Best Seller" Foreground="Black" HorizontalContentAlignment="Center"  Width="1200" VerticalAlignment="Top" FontSize="15" HorizontalAlignment="Center" Canvas.Top="333"/>
 
-        <ComboBox Canvas.Left="10" SelectionChanged="ComboBox_SelectionChanged" Canvas.Top="34" Width="137" RenderTransformOrigin="0.328,-0.214" HorizontalAlignment="Left" VerticalAlignment="Center">
-            <ComboBoxItem Content="productidname1"/>
-            <ComboBoxItem Content="productidname2"/>
-            <ComboBoxItem Content="productidname3"/>
-            <ComboBoxItem Content="productidname4" IsSelected="True"/>
-
+        <ComboBox Name="CBProductNames" SelectionChanged="ComboBox_SelectionChangedNameProduct" Canvas.Left="10"  ItemsSource="{Binding ProductNames}" Canvas.Top="34" Width="137" RenderTransformOrigin="0.328,-0.214" HorizontalAlignment="Left" VerticalAlignment="Center">
         </ComboBox>
         <ComboBox Canvas.Left="152" SelectionChanged="ComboBox_SelectionChanged" Canvas.Top="34" Width="137" RenderTransformOrigin="0.328,-0.214" HorizontalAlignment="Left" VerticalAlignment="Center">
             <ComboBoxItem Content="day"/>
@@ -48,5 +46,11 @@
             <ComboBoxItem Content="year" IsSelected="True"/>
 
         </ComboBox>
+        <Label Name="TitleProduct" Content="Current Name Product"  FontSize="18" FontWeight="Bold" Canvas.Left="505" Canvas.Top="34" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        <Label Background="White" FontSize="11" Name="NameTop1" Content="NameTop1" Canvas.Left="320" Canvas.Top="475" HorizontalAlignment="Left" Height="30" VerticalAlignment="Center" Width="140" RenderTransformOrigin="1.218,0.268"/>
+        <Label Background="White" FontSize="11" Name="NameTop2" Content="NameTop2" Canvas.Left="320" Canvas.Top="505" HorizontalAlignment="Center" Height="30" VerticalAlignment="Top" Width="140"/>
+        <Label Background="White" FontSize="11" Name="NameTop3" Content="NameTop3" Canvas.Left="320" Canvas.Top="535" HorizontalAlignment="Center" Height="30" VerticalAlignment="Top" Width="140"/>
+
     </Canvas>
 </Window>
