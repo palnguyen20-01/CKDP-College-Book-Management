@@ -146,6 +146,7 @@ namespace BookStore
                     books.Add(temp);
                 addTotalPrice(temp.Price);
             }
+            updateTotalPrice2();
         }
 
         private void addTotalPrice(string price)
@@ -154,7 +155,7 @@ namespace BookStore
             _all.total = totalPrice.ToString();
         }
 
-        private void updateTotalPrice(int mode=1)
+        private bool updateTotalPrice(int mode=1)
         {
             totalPrice = 0;
             BookDetail temp = null;
@@ -185,10 +186,26 @@ namespace BookStore
             }
             if (temp != null) books.Remove(temp);
             _all.total = totalPrice.ToString();
+            return true;
         }
+
+        public void updateTotalPrice2()
+        {
+            totalPrice = 0;
+            BookDetail temp = null;
+            foreach (BookDetail book in books)
+            {
+                totalPrice += int.Parse(book.Price) * book.quantity;
+            }
+            _all.total = totalPrice.ToString();
+        }
+
         private void NumericUpDown_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double?> e)
         {
-            updateTotalPrice();
+            if (updateTotalPrice())
+            {
+                updateTotalPrice2();
+            };
         }
 
     }
