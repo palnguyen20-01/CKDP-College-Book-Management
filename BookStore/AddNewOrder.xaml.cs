@@ -94,12 +94,21 @@ namespace BookStore
 
                 OrderDetailDao orderDetailDao = new OrderDetailDao();
                
+                RevenueProfitDAO rpf = new RevenueProfitDAO();
+                ProductDAOKhoi productDAOKhoi = new ProductDAOKhoi();
+
                 foreach(BookDetail i in books)
                 {
                     orderDetailDao.insert(newOrderId, i.ID, i.quantity, int.Parse(i.Price));
                     i.Quantity = (int.Parse(i.Quantity) - i.quantity).ToString();
                     ProductDAO._db.updateQuantityBook(i.ID, i.Quantity);
 
+                    int newIdRevenue=rpf.count()+1;
+                    float revenue = (float)(i.quantity * int.Parse(i.Price));
+                    float profit = revenue - (float)(i.quantity* int.Parse(i.RawPrice));
+                    rpf.insert(newIdRevenue,revenue,profit,date);
+
+                    productDAOKhoi.insert(i.ID, i.quantity, date);
                 }
 
                 MessageBox.Show("Save successful !!!","Information",MessageBoxButton.OK, MessageBoxImage.Information);

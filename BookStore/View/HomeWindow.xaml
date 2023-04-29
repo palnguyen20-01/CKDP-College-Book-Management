@@ -187,7 +187,24 @@
             </Fluent:RibbonTabItem>
             <!--Report-->
             <Fluent:RibbonTabItem Header="Report">
-
+                <Fluent:RibbonGroupBox Header="Report">
+                    <Fluent:Button Header="Report 1" Click="Report1_Click">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/report1.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Report 1" Text="See report 1"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button> 
+                    <Fluent:Button Header="Report 2" Click="Report2_Click">
+                        <Fluent:Button.LargeIcon>
+                            <Image Source="../Assets/Icon/report2.png" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        </Fluent:Button.LargeIcon>
+                        <Fluent:Button.ToolTip>
+                            <Fluent:ScreenTip Title="Report 2" Text="See report 2"/>
+                        </Fluent:Button.ToolTip>
+                    </Fluent:Button>
+                </Fluent:RibbonGroupBox>
             </Fluent:RibbonTabItem>
         </Fluent:Ribbon>
         <TabControl Name="tabs" BorderThickness="0" SelectedIndex="{Binding ElementName=ribbon,Path=SelectedTabIndex}">

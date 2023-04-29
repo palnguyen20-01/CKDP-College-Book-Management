@@ -19,6 +19,8 @@
     <None Remove="Assets\Icon\next.png" />
     <None Remove="Assets\Icon\open.png" />
     <None Remove="Assets\Icon\previous.png" />
+    <None Remove="Assets\Icon\report1.png" />
+    <None Remove="Assets\Icon\report2.png" />
     <None Remove="Assets\Icon\save.png" />
     <None Remove="Assets\Icon\search.png" />
     <None Remove="Assets\Icon\uncheck.png" />
@@ -36,6 +38,8 @@
 
   <ItemGroup>
     <Resource Include="Assets\Icon\check.png" />
+    <Resource Include="Assets\Icon\report1.png" />
+    <Resource Include="Assets\Icon\report2.png" />
     <Resource Include="Assets\Icon\uncheck.png" />
   </ItemGroup>
 

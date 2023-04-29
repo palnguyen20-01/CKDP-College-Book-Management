@@ -1,12 +1,16 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace BookStore
 {
@@ -147,6 +151,19 @@ namespace BookStore
                 MessageBox.Show(ex.Message + "???");
             }
             return new List<Product>();
+        }
+        public void insert(int productid,int quantity,DateOnly period)
+        {
+            string sql = "INSERT INTO QUANTITY VALUES (@productid,@quantities,@period)";
+
+            var command = new SqlCommand(sql, MainWindow._connection);
+
+
+            command.Parameters.Add("@productid", SqlDbType.Int).Value = productid;
+            command.Parameters.Add("@quantities", SqlDbType.Int).Value = quantity;
+            command.Parameters.Add("@period", SqlDbType.Date).Value = period;
+
+            command.ExecuteNonQuery();
         }
     }
 }

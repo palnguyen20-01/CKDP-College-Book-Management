@@ -6,6 +6,7 @@
         xmlns:local="clr-namespace:BookStore"
         xmlns:lvc="clr-namespace:LiveCharts.Wpf;assembly=LiveCharts.Wpf"        
         mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
         Title="IncomeProfitDashBoard" Height="700" Width="1200">
     <Canvas>
         <lvc:CartesianChart Name="IPChart" 

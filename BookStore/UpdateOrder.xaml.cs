@@ -184,7 +184,11 @@ namespace BookStore
                     totalPrice += int.Parse(book.Price) * book.quantity;
                 }
             }
-            if (temp != null) books.Remove(temp);
+            if (temp != null)
+            {
+                    ProductDAO._db.updateQuantityBook(temp.ID, temp.Quantity);
+                books.Remove(temp);
+            }
             _all.total = totalPrice.ToString();
             return true;
         }

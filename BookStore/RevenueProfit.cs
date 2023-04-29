@@ -1,12 +1,16 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 
 namespace BookStore
 {
@@ -68,6 +72,27 @@ namespace BookStore
             return new ObservableCollection<RevenueProfit>();
 
 
+        }
+        public void insert(int id,float revenue,float profit,DateOnly preiod)
+        {
+            string sql = "INSERT INTO RevenueProfit VALUES (@id,@revenue, @profit,@preiod)";
+
+            var command = new SqlCommand(sql, MainWindow._connection);
+
+            command.Parameters.Add("@id", SqlDbType.Int).Value = id;
+            command.Parameters.Add("@revenue", SqlDbType.Float).Value = revenue;
+            command.Parameters.Add("@profit", SqlDbType.Float).Value = profit;
+            command.Parameters.Add("@preiod", SqlDbType.Date).Value = preiod;
+
+            command.ExecuteNonQuery();
+        }
+        public int count()
+        {
+            string sql = "SELECT MAX(ID) FROM RevenueProfit";
+            var command = new SqlCommand(sql, MainWindow._connection);
+            var result = command.ExecuteScalar();
+            int count = (result.ToString() != "") ? (int)result : 0;
+            return count;
         }
     }
 
