@@ -1,5 +1,6 @@
 ﻿using BookStore.View;
 using Microsoft.Data.SqlClient;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -42,12 +43,9 @@ namespace BookStore
             string username = usernameTextBox.Text;
             string password = passwordBox.Password;
 
-            string connectionString = $"""
-                Server = .\CHIEN;
-                Database = BookStore;
-                TrustServerCertificate=True;
-                Trusted_Connection=true;                
-                """;
+            var secret = new ConfigurationBuilder().AddUserSecrets<MainWindow>().Build();
+            var connectionString = secret.GetSection("SQL:ConnectionString").Value;
+            connectionString = connectionString.Replace("@Database", "BookStore");
             _connection = new SqlConnection(connectionString);
 
             try
@@ -66,7 +64,7 @@ namespace BookStore
                 if (rememberCheckBox.IsChecked == true)
                 {
                     // Lưu username và pass
-                    var config = ConfigurationManager.OpenExeConfiguration(
+                    var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
                         ConfigurationUserLevel.None);
                     config.AppSettings.Settings["Username"].Value = usernameTextBox.Text;
 
@@ -92,7 +90,7 @@ namespace BookStore
 
 
                     config.Save(ConfigurationSaveMode.Full);
-                    ConfigurationManager.RefreshSection("appSettings");
+                    System.Configuration.ConfigurationManager.RefreshSection("appSettings");
                 }
             }
             catch (Exception ex)
@@ -147,9 +145,9 @@ namespace BookStore
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string username = ConfigurationManager.AppSettings["Username"]!;
-            string passwordIn64 = ConfigurationManager.AppSettings["Password"]!;
-            string entropyIn64 = ConfigurationManager.AppSettings["Entropy"]!;
+            string username = System.Configuration.ConfigurationManager.AppSettings["Username"]!;
+            string passwordIn64 = System.Configuration.ConfigurationManager.AppSettings["Password"]!;
+            string entropyIn64 = System.Configuration.ConfigurationManager.AppSettings["Entropy"]!;
 
             if (passwordIn64.Length != 0)
             {
