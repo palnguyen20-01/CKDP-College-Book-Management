@@ -27,11 +27,13 @@ namespace BookStore
     /// </summary>
     public partial class MainWindow : Window
     {
+        
         public MainWindow()
         {
             InitializeComponent();
         }
         public static SqlConnection _connection;
+        public static string username;
         private void connectButton_Click(object sender, RoutedEventArgs e)
         {
             // Lấy mã nguồn về cần làm 2 chuyện
@@ -39,59 +41,59 @@ namespace BookStore
             // 2. Xóa đi file config mặc định bởi vì nó lưu mật khẩu đã
             // // được mã hóa theo username trên máy thầy
 
-
-            string username = usernameTextBox.Text;
+            username = usernameTextBox.Text;
             string password = passwordBox.Password;
 
             var secret = new ConfigurationBuilder().AddUserSecrets<MainWindow>().Build();
-            var connectionString = secret.GetSection("SQL:ConnectionString").Value;
-            connectionString = connectionString.Replace("@Database", "BookStore");
+            var connectionString = secret.GetSection("MyDB:ConnectionString").Value;
+            connectionString = connectionString.Replace("@Catalog", "BookStore");
             _connection = new SqlConnection(connectionString);
 
             try
             {
                 _connection.Open();
-                Title = "Database is ready!";
-
                 string temp_password = getPassword(username);
 
                 if (temp_password != "" && temp_password.Equals(password))
                 {
-                    HomeWindow home = new HomeWindow();
-                    home.Show();
-                }
-
-                if (rememberCheckBox.IsChecked == true)
-                {
-                    // Lưu username và pass
-                    var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                        ConfigurationUserLevel.None);
-                    config.AppSettings.Settings["Username"].Value = usernameTextBox.Text;
-
-                    // Ma hoa mat khau
-                    var passwordInBytes = Encoding.UTF8.GetBytes(password);
-                    var entropy = new byte[20];
-                    using (var rng = RandomNumberGenerator.Create())
+                    if (rememberCheckBox.IsChecked == true)
                     {
-                        rng.GetBytes(entropy);
+                        // Lưu username và pass
+                        var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                            ConfigurationUserLevel.None);
+                        config.AppSettings.Settings["Username"].Value = usernameTextBox.Text;
+
+                        // Ma hoa mat khau
+                        var passwordInBytes = Encoding.UTF8.GetBytes(password);
+                        var entropy = new byte[20];
+                        using (var rng = RandomNumberGenerator.Create())
+                        {
+                            rng.GetBytes(entropy);
+                        }
+
+                        var cypherText = ProtectedData.Protect(
+                            passwordInBytes,
+                            entropy,
+                            DataProtectionScope.CurrentUser
+                        );
+
+                        var passwordIn64 = Convert.ToBase64String(cypherText);
+                        var entropyIn64 = Convert.ToBase64String(entropy);
+
+                        config.AppSettings.Settings["Password"].Value = passwordIn64;
+                        config.AppSettings.Settings["Entropy"].Value = entropyIn64;
+
+                        //insert(username, passwordIn64, entropyIn64);
+                        config.Save(ConfigurationSaveMode.Full);
+                        System.Configuration.ConfigurationManager.RefreshSection("appSettings");
                     }
 
-                    var cypherText = ProtectedData.Protect(
-                        passwordInBytes,
-                        entropy,
-                        DataProtectionScope.CurrentUser
-                    );
-
-                    var passwordIn64 = Convert.ToBase64String(cypherText);
-                    var entropyIn64 = Convert.ToBase64String(entropy);
-
-                    config.AppSettings.Settings["Password"].Value = passwordIn64;
-                    config.AppSettings.Settings["Entropy"].Value = entropyIn64;
-
-
-                    config.Save(ConfigurationSaveMode.Full);
-                    System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                    HomeWindow home = new HomeWindow();
+                    home.Show();
+                    this.Close();
                 }
+
+                
             }
             catch (Exception ex)
             {
@@ -218,6 +220,38 @@ namespace BookStore
         {
             var p = new IncomeProfitDashBoard();
             p.Show();
+        }
+
+        private void Border_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void ButtonMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
+
+        private void WindowStateButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (Application.Current.MainWindow.WindowState != WindowState.Maximized)
+                Application.Current.MainWindow.WindowState = WindowState.Maximized;
+            else Application.Current.MainWindow.WindowState = WindowState.Normal;
+        }
+        private void CloseButton_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
         }
     }
 }

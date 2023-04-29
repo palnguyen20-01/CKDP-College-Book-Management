@@ -5,20 +5,95 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:BookStore"
         mc:Ignorable="d"
-         Title="MainWindow" Height="450" Width="800" Loaded="Window_Loaded">
-    <Canvas>
-        <Button Name="connectButton" Width="80" Height="35" Content="Connect" Click="connectButton_Click" Canvas.Left="177" Canvas.Top="182" />
-        <TextBlock Text="Username:" Canvas.Left="105" Canvas.Top="49"/>
-        <TextBox Name="usernameTextBox" Width="150" Height="35" Canvas.Left="177" Canvas.Top="39"/>
-        <TextBlock Text="Password:" Canvas.Left="109" Canvas.Top="89"/>
-        <PasswordBox PasswordChar="*" x:Name="passwordBox" Width="150" Height="35" Canvas.Left="177" Canvas.Top="79"/>
+         Title="MainWindow" Height="400" Width="800" Loaded="Window_Loaded"
+        WindowStartupLocation="CenterScreen" AllowsTransparency="True" Background="Black" WindowStyle="None"  ResizeMode="CanResizeWithGrip">
+    <Grid >
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="1.5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="25"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-        <CheckBox Name="rememberCheckBox" Content="Remember me" Canvas.Left="168" Canvas.Top="141" />
+        <Border Grid.ColumnSpan="2"  Background="Gray" MouseDown="Border_MouseDown">
+            <Grid HorizontalAlignment="Stretch">
+                <Label Content="Window App"
+                       Foreground="White"
+                       FontWeight="SemiBold"/>
+                <StackPanel HorizontalAlignment="Right"                          
+                            Orientation="Horizontal">
+                    <Button Width="20" Height="20"       
+                                Content="_"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Margin="0,0,0,1"
+                                Click="ButtonMinimize_Click"/>
+                    <Button Width="20" Height="20"   
+                                Content="☐"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Click="WindowStateButton_Click"/>
+                    <Button Width="20" Height="20"          
+                                Content="X"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="White"
+                                FontWeight="Bold"
+                                Click="CloseButton_Click"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+        <Border  Grid.Row="1">
+            <Border.Background>
+                <LinearGradientBrush StartPoint="0,0" EndPoint="1,1">
+                    <GradientStop Color="#3AA9AD" Offset="0"/>
+                    <GradientStop Color="#3AADA1" Offset="1"/>
+                    
+                </LinearGradientBrush>
+            </Border.Background>
 
-        <Button Name="selectButton" Width="80" Height="35" Content="Select" Click="selectButton_Click" Canvas.Left="185" Canvas.Top="271"/>
-        <Button Name="deleteButton" Width="80" Height="36" Content="Delete" Click="deleteButton_Click" Canvas.Left="185" Canvas.Top="344" HorizontalAlignment="Center" VerticalAlignment="Top"/>
-        <Button Content="Home Window" Click="homeWindow_Click" Canvas.Left="400" Canvas.Top="136"/>
-        <Button Content="Revenue Profit Dash Board" Click="RevenueProfitDashBoardWindow_Click" Canvas.Left="400" Canvas.Top="180" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            <Grid>
+                <Canvas>
+                    <Polygon Points="0,20 230, 140 0, 270" Fill="#4EB1B6"/>
+                    <Polygon Points="100,300 200, 300 180, 370" Fill="#4EB1B6"/>
+                    <Ellipse Margin="250 350 0 0" Width="40" Height="40" Fill="#4EB1B6"/>
+                    <Ellipse Margin="50 300 0 0" Width="20" Height="20" Fill="#4EB1B6"/>
+                </Canvas>
 
-    </Canvas>
+                <StackPanel>
+                    <TextBlock Margin="0,20,0,0" Text="Lập trình Window C#" Foreground="#ffffff" FontSize="36" FontWeight="Bold" TextAlignment="Center" TextWrapping="Wrap"/>
+                    <TextBlock Margin="0,20,0,0" Text="Giáo viên: Trần Duy Quang" Foreground="#ffffff" FontSize="20" LineHeight="28" TextAlignment="Center" TextWrapping="Wrap"/>
+                    <TextBlock Margin="0,20,0,0" Text="Đồ án 1 - Nhóm CKDP" Foreground="#ffffff" FontSize="20" LineHeight="28" TextAlignment="Center" TextWrapping="Wrap"/>
+                    <TextBlock Margin="0,40,0,0" Text="App quản lý cửa hàng bán sách" Foreground="#ffffff" FontSize="20" LineHeight="28" TextAlignment="Center" TextWrapping="Wrap"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <Border Background="#ffffff" Grid.Column="1" Grid.Row="1" >
+            <StackPanel Margin="30,20,0,0">
+                
+                <TextBlock Text="Đăng nhập" FontSize="36" Foreground="#3AB19B" TextAlignment="Center"/>
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Margin="0, 20,0,0" Text="Tài khoản:" FontSize="20"  Foreground="#3AB19B" />
+                    <TextBox Margin="70, 20,0,0" Name="usernameTextBox" Width="250" Height="35"/>
+                </StackPanel>
+
+                <StackPanel Orientation="Horizontal" >
+                    <TextBlock Margin="0, 20,0,0" Text="Mật khẩu:" FontSize="20" Foreground="#3AB19B"/>
+                    <PasswordBox Margin="70, 20,0,0" PasswordChar="*" x:Name="passwordBox" Width="250" Height="35" />
+                </StackPanel>
+                <CheckBox Name="rememberCheckBox" Content="Remember me"  Margin="320, 20,0,0" />
+                <Button Margin="0, 20,0,0" Name="connectButton" Width="80" Height="35" Content="Đăng nhập" Click="connectButton_Click"  />
+
+                <Button Margin="0, 20,0,0"  Content="Revenue Profit Dash Board" Click="RevenueProfitDashBoardWindow_Click" HorizontalAlignment="Center" VerticalAlignment="Top"/>
+            </StackPanel>
+        </Border>
+       
+    </Grid>
 </Window>

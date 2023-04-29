@@ -38,7 +38,7 @@ namespace BookStore
             if (isValidated())
             {
                 string sql =
-                "Update Account set password = @new_password and entropy = @entropy where username = @username";
+                "Update Account set password = @new_password, entropy = @entropy where username = @username";
                 
 
                 var config = ConfigurationManager.OpenExeConfiguration(
@@ -68,10 +68,10 @@ namespace BookStore
 
                 var command = new SqlCommand(sql, MainWindow._connection);
 
-                command.Parameters.Add("@new_password", SqlDbType.NVarChar).Value = "a";
+                command.Parameters.Add("@new_password", SqlDbType.NVarChar).Value = passwordIn64;
                 command.Parameters.Add("@entropy", SqlDbType.NVarChar).Value = entropyIn64;
-                command.Parameters.Add("@username", SqlDbType.NVarChar).Value = currentUsername.Text;
-                Title = "OK";
+                command.Parameters.Add("@username", SqlDbType.NVarChar).Value = currentUsername.Text;        
+                command.ExecuteNonQuery();
                 DialogResult = true;
             }
         
@@ -144,6 +144,8 @@ namespace BookStore
 
         private void changePasswordLoaded(object sender, RoutedEventArgs e)
         {
+            currentUsername.Text = MainWindow.username;
+            currentUsername.IsEnabled = false;
             newPassword.IsEnabled = false;
             confirmPassword.IsEnabled = false;
             OKButton.IsEnabled = false;
