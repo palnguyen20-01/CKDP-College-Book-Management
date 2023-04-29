@@ -80,7 +80,7 @@ namespace BookStore
         }
 
 
-
+        string currentPreiod = "year";
         public String ShowParseLabelRevenue(ChartPoint label)
         {
             Double yRevenue = label.Y;
@@ -193,7 +193,7 @@ namespace BookStore
             InitializeComponent();
 
             IPChart.DataClick += ColumnSeries_OnDataClick;
-            GetAll("year");
+            GetAll(currentPreiod);
             DataContext = this;
         }
 
@@ -202,7 +202,9 @@ namespace BookStore
             ComboBox comboBox = (ComboBox)sender;
             ComboBoxItem selectedItem = (ComboBoxItem)comboBox.SelectedItem;
             string selectedOption = selectedItem.Content.ToString();
-            GetAll(selectedOption);
+            if (selectedOption == currentPreiod) return;
+            currentPreiod = selectedOption;
+            GetAll(currentPreiod);
         }
     }
 }
