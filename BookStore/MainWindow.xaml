@@ -29,19 +29,24 @@
                                 Background="Transparent"
                                 BorderThickness="0"
                                 Foreground="White"
+                                Focusable="False"
                                 FontWeight="Bold"
                                 Margin="0,0,0,1"
+                                BorderBrush="Transparent"
                                 Click="ButtonMinimize_Click"/>
-                    <Button Width="20" Height="20"   
+                    <Button Width="20" Height="20" 
                                 Content="☐"
                                 Background="Transparent"
-                                BorderThickness="0"
                                 Foreground="White"
+                                BorderThickness="0"
+                                BorderBrush="White"
+                                Focusable="False"
                                 FontWeight="Bold"
                                 Click="WindowStateButton_Click"/>
                     <Button Width="20" Height="20"          
                                 Content="X"
                                 Background="Transparent"
+                            Focusable="False"
                                 BorderThickness="0"
                                 Foreground="White"
                                 FontWeight="Bold"
@@ -88,8 +93,8 @@
                     <TextBlock Margin="0, 20,0,0" Text="Mật khẩu:" FontSize="20" Foreground="#3AB19B"/>
                     <PasswordBox Margin="70, 20,0,0" PasswordChar="*" x:Name="passwordBox" Width="250" Height="35" />
                 </StackPanel>
-                <CheckBox Name="rememberCheckBox" Content="Remember me"  Margin="320, 20,0,0" />
-                <Button Margin="0, 20,0,0" Name="connectButton" Width="80" Height="35" Content="Đăng nhập" Click="connectButton_Click"  />
+                <CheckBox Name="rememberCheckBox" Content="Remember me"  Margin="320, 20,0,0" Click="rememberMe_Click" />
+                <Button Focusable="False" Margin="0, 20,0,0" Name="connectButton" Width="80" Height="35" Content="Đăng nhập" Click="connectButton_Click"  />
 
             </StackPanel>
         </Border>

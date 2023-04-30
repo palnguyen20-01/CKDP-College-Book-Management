@@ -82,7 +82,7 @@ namespace BookStore
 
                         config.AppSettings.Settings["Password"].Value = passwordIn64;
                         config.AppSettings.Settings["Entropy"].Value = entropyIn64;
-
+                        config.AppSettings.Settings["RememberMe"].Value = "1";
                         //insert(username, passwordIn64, entropyIn64);
                         config.Save(ConfigurationSaveMode.Full);
                         System.Configuration.ConfigurationManager.RefreshSection("appSettings");
@@ -147,27 +147,31 @@ namespace BookStore
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string username = System.Configuration.ConfigurationManager.AppSettings["Username"]!;
-            string passwordIn64 = System.Configuration.ConfigurationManager.AppSettings["Password"]!;
-            string entropyIn64 = System.Configuration.ConfigurationManager.AppSettings["Entropy"]!;
-
-            if (passwordIn64.Length != 0)
+            string rememberValue = System.Configuration.ConfigurationManager.AppSettings["RememberMe"]!;
+            if (rememberValue.Equals("1"))
             {
-                byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
-                byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
+                rememberCheckBox.IsChecked = true;
+                string username = System.Configuration.ConfigurationManager.AppSettings["Username"]!;
+                string passwordIn64 = System.Configuration.ConfigurationManager.AppSettings["Password"]!;
+                string entropyIn64 = System.Configuration.ConfigurationManager.AppSettings["Entropy"]!;
 
-                byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
-                    entropyInBytes,
-                    DataProtectionScope.CurrentUser
-                );
+                if (passwordIn64.Length != 0)
+                {
+                    byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
+                    byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
 
-                string password = Encoding.UTF8.GetString(passwordInBytes);
+                    byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
+                        entropyInBytes,
+                        DataProtectionScope.CurrentUser
+                    );
 
-                usernameTextBox.Text = username;
-                passwordBox.Password = password;
+                    string password = Encoding.UTF8.GetString(passwordInBytes);
+
+                    usernameTextBox.Text = username;
+                    passwordBox.Password = password;
+                }
             }
-
-
+            
 
         }
 
@@ -251,6 +255,21 @@ namespace BookStore
             if (e.LeftButton == MouseButtonState.Pressed)
             {
                 DragMove();
+            }
+        }
+
+        private void rememberMe_Click(object sender, RoutedEventArgs e)
+        {
+            if (rememberCheckBox.IsChecked == false)
+            {
+                var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                                ConfigurationUserLevel.None);
+ 
+                config.AppSettings.Settings["RememberMe"].Value = "0";
+
+                //insert(username, passwordIn64, entropyIn64);
+                config.Save(ConfigurationSaveMode.Full);
+                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
             }
         }
     }
