@@ -25,14 +25,16 @@ namespace BookStore.View
 
         List<Order> _orders;
         OrderDao orderDao;
+
+        DateOnly? currentFromDate=null;
+        DateOnly? currentToDate=null;
+
         public QLDonHang()
         {
             InitializeComponent();
             orderDao = new OrderDao();
-            
+         
             updateOrderList();
-            _updateDataSource(1);
-            _updatePagingInfo();
 
             currentPageComboBox.SelectedIndex = _currentPage - 1;
         }
@@ -118,7 +120,7 @@ namespace BookStore.View
         }
 
         int _currentPage = 1;
-        int _rowsPerPage = 5;
+        int _rowsPerPage = 10;
         int _totalItems = 0;
         int _totalPages = 0;
 
@@ -128,7 +130,7 @@ namespace BookStore.View
             {
                 _currentPage = currentPageComboBox.SelectedIndex + 1;
 
-                _updateDataSource(_currentPage);
+                _updateDataSource(_currentPage,currentFromDate,currentToDate);
             }
         }
 
@@ -243,6 +245,9 @@ namespace BookStore.View
 
         public void filterOrder(DateOnly? fromDate, DateOnly? toDate)
         {
+            currentFromDate= fromDate;
+            currentToDate= toDate;
+
             _updateDataSource(1,fromDate,toDate);
             _updatePagingInfo();
 

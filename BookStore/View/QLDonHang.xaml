@@ -13,7 +13,7 @@
     </UserControl.Resources>
     <StackPanel Margin="20">
         <Label Content="OrderList" DockPanel.Dock="Top" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" FontFamily="Century Gothic" Canvas.Left="19" Canvas.Top="114"/>
-        <ListView x:Name="ordersListView" BorderThickness="1" Height="Auto" MinHeight="200" MaxHeight="450" >
+        <ListView x:Name="ordersListView" BorderThickness="1" Height="430"  >
             <ListView.View>
                 <GridView>
                     <GridViewColumn DisplayMemberBinding="{Binding id}" Header="ID" Width="50"/>
