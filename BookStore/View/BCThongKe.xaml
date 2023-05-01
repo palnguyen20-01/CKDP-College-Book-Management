@@ -7,6 +7,6 @@
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
     <Canvas Background="#FFFFFF">
-        <TextBlock Text="Bao cao thong ke" Canvas.Left="333" Canvas.Top="93"/>
+        <TextBlock FontSize="20" Text="Báo cáo thống kê" Canvas.Left="354" Canvas.Top="206" HorizontalAlignment="Center" Height="38" VerticalAlignment="Top"/>
     </Canvas>
 </UserControl>
