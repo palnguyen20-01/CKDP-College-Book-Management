@@ -1,3 +1,5 @@
+Drop table RevenueProfit
+Drop table Quantity
 create table RevenueProfit(
 	id int,
 	revenue float,
