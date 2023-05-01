@@ -52,36 +52,18 @@ namespace BookStore
             try
             {
                 _connection.Open();
-                string temp_password = getPassword(username);
+                //string temp_password = getPassword(username);
 
-                if (temp_password != "" && temp_password.Equals(password))
+                if (checkPassword(username))
                 {
                     if (rememberCheckBox.IsChecked == true)
                     {
                         // Lưu username và pass
                         var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
                             ConfigurationUserLevel.None);
-                        config.AppSettings.Settings["Username"].Value = usernameTextBox.Text;
-
-                        // Ma hoa mat khau
-                        var passwordInBytes = Encoding.UTF8.GetBytes(password);
-                        var entropy = new byte[20];
-                        using (var rng = RandomNumberGenerator.Create())
-                        {
-                            rng.GetBytes(entropy);
-                        }
-
-                        var cypherText = ProtectedData.Protect(
-                            passwordInBytes,
-                            entropy,
-                            DataProtectionScope.LocalMachine
-                        );
-
-                        var passwordIn64 = Convert.ToBase64String(cypherText);
-                        var entropyIn64 = Convert.ToBase64String(entropy);
-
-                        config.AppSettings.Settings["Password"].Value = passwordIn64;
-                        config.AppSettings.Settings["Entropy"].Value = entropyIn64;
+                        
+                        config.AppSettings.Settings["Password"].Value = password;
+                        //config.AppSettings.Settings["Entropy"].Value = entropyIn64;
                         config.AppSettings.Settings["RememberMe"].Value = "1";
                         //insert(username, passwordIn64, entropyIn64);
                         config.Save(ConfigurationSaveMode.Full);
@@ -93,12 +75,37 @@ namespace BookStore
                     this.Close();
                 }
                 else
-                {               
+                {
                     MessageBox.Show(
                     "Login Failed");
                 }
-                
 
+                //if (rememberCheckBox.IsChecked == true)
+                //{
+                //    // Lưu username và pass
+                //    var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
+                //        ConfigurationUserLevel.None);
+
+                //    config.AppSettings.Settings["Password"].Value = password;
+                //    //config.AppSettings.Settings["Entropy"].Value = entropyIn64;
+                //    config.AppSettings.Settings["RememberMe"].Value = "1";
+                //    using (var deriveBytes = new Rfc2898DeriveBytes(password, 20)) // 20-byte salt
+                //    {
+                //        byte[] salt = deriveBytes.Salt;
+                //        byte[] key = deriveBytes.GetBytes(20); // 20-byte key
+
+                //        string encodedSalt = Convert.ToBase64String(salt);
+                //        string encodedKey = Convert.ToBase64String(key);
+
+                //        // store encodedSalt and encodedKey in database
+                //        // you could optionally skip the encoding and store the byte arrays directly
+                //        insert(username, encodedKey, encodedSalt);
+                        
+                //    }
+                    
+                //    config.Save(ConfigurationSaveMode.Full);
+                //    System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                //}
             }
             catch (Exception ex)
             {
@@ -117,7 +124,7 @@ namespace BookStore
             command.ExecuteNonQuery();
         }
 
-        private string getPassword(string username)
+        private Boolean checkPassword(string username)
         {
             string sql =
                 "select password,entropy from ACCOUNT where username = @username";
@@ -128,26 +135,25 @@ namespace BookStore
             var reader = command.ExecuteReader();
 
             string password = "";
-
+            bool flag = false;
             while (reader.Read())
             {
+                string encodedSalt = (string)reader["entropy"];
+                string encodedKey = (string)reader["password"];
 
-                string entropyIn64 = (string)reader["entropy"];
-                string passwordIn64 = (string)reader["password"];
+                // load encodedSalt and encodedKey from database for the given username
+                byte[] salt = Convert.FromBase64String(encodedSalt);
+                byte[] key = Convert.FromBase64String(encodedKey);
 
-                byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
-                byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
-
-                byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
-                    entropyInBytes,
-                    DataProtectionScope.LocalMachine
-                );
-
-                password = Encoding.UTF8.GetString(passwordInBytes);
-
+                using (var deriveBytes = new Rfc2898DeriveBytes(password, salt))
+                {
+                    byte[] testKey = deriveBytes.GetBytes(20); // 20-byte key
+                    if (!testKey.SequenceEqual(key))
+                        flag = true;
+                }             
             }
             reader.Close();
-            return password;
+            return flag;
         }
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
@@ -158,22 +164,22 @@ namespace BookStore
                 rememberCheckBox.IsChecked = true;
                 string username = System.Configuration.ConfigurationManager.AppSettings["Username"]!;
                 string passwordIn64 = System.Configuration.ConfigurationManager.AppSettings["Password"]!;
-                string entropyIn64 = System.Configuration.ConfigurationManager.AppSettings["Entropy"]!;
+                //string entropyIn64 = System.Configuration.ConfigurationManager.AppSettings["Entropy"]!;
 
                 if (passwordIn64.Length != 0)
                 {
-                    byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
-                    byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
+                    //byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
+                    //byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
 
-                    byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
-                        entropyInBytes,
-                        DataProtectionScope.LocalMachine
-                    );
+                    //byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
+                    //    entropyInBytes,
+                    //    DataProtectionScope.LocalMachine
+                    //);
 
-                    string password = Encoding.UTF8.GetString(passwordInBytes);
+                    //string password = Encoding.UTF8.GetString(passwordInBytes);
 
                     usernameTextBox.Text = username;
-                    passwordBox.Password = password;
+                    passwordBox.Password = passwordIn64;
                 }
             }
             
