@@ -63,6 +63,7 @@ namespace BookStore
                             ConfigurationUserLevel.None);
                         
                         config.AppSettings.Settings["Password"].Value = password;
+                        config.AppSettings.Settings["Username"].Value = username;
                         //config.AppSettings.Settings["Entropy"].Value = entropyIn64;
                         config.AppSettings.Settings["RememberMe"].Value = "1";
                         //insert(username, passwordIn64, entropyIn64);
@@ -100,9 +101,9 @@ namespace BookStore
                 //        // store encodedSalt and encodedKey in database
                 //        // you could optionally skip the encoding and store the byte arrays directly
                 //        insert(username, encodedKey, encodedSalt);
-                        
+
                 //    }
-                    
+
                 //    config.Save(ConfigurationSaveMode.Full);
                 //    System.Configuration.ConfigurationManager.RefreshSection("appSettings");
                 //}
@@ -134,7 +135,7 @@ namespace BookStore
 
             var reader = command.ExecuteReader();
 
-            string password = "";
+            string password = passwordBox.Password;
             bool flag = false;
             while (reader.Read())
             {
@@ -148,7 +149,7 @@ namespace BookStore
                 using (var deriveBytes = new Rfc2898DeriveBytes(password, salt))
                 {
                     byte[] testKey = deriveBytes.GetBytes(20); // 20-byte key
-                    if (!testKey.SequenceEqual(key))
+                    if (testKey.SequenceEqual(key))
                         flag = true;
                 }             
             }
@@ -186,63 +187,10 @@ namespace BookStore
 
         }
 
-        private void selectButton_Click(object sender, RoutedEventArgs e)
-        {
-            int selected = 3;
-            string sql =
-                "select id, name from Category where id = @id";
-
-            var command = new SqlCommand(sql, _connection);
-            command.Parameters.Add("@id", SqlDbType.Int).Value = selected;
-
-            var reader = command.ExecuteReader();
-
-            while (reader.Read())
-            {
-                int id = (int)reader["id"];
-                string name = (string)reader["name"];
-
-                MessageBox.Show($"{id} - {name}");
-            }
-
-            reader.Close();
-        }
-
-        private void deleteButton_Click(object sender, RoutedEventArgs e)
-        {
-            int selected = 3;
-            string sql = "delete from Category where id = @id";
-            var command = new SqlCommand(sql, _connection);
-            command.Parameters.Add("@id", SqlDbType.Int).Value = selected;
-
-            int rows = command.ExecuteNonQuery();
-
-            if (rows > 0)
-            {
-                MessageBox.Show($"Category {selected} is deleted");
-            }
-        }
-
-        private void homeWindow_Click(object sender, RoutedEventArgs e)
-        {
-            var p = new HomeWindow();
-            p.Show();
-        }
-
-        
-
         private void RevenueProfitDashBoardWindow_Click(object sender, RoutedEventArgs e)
         {
             var p = new IncomeProfitDashBoard();
             p.Show();
-        }
-
-        private void Border_MouseDown(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
         }
 
         private void ButtonMinimize_Click(object sender, RoutedEventArgs e)

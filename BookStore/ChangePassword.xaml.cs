@@ -39,37 +39,31 @@ namespace BookStore
             {
                 string sql =
                 "Update Account set password = @new_password, entropy = @entropy where username = @username";
-                
 
+                string encodedSalt, encodedKey;
                 var config = ConfigurationManager.OpenExeConfiguration(
                         ConfigurationUserLevel.None);
-                var passwordInBytes = Encoding.UTF8.GetBytes(newPassword.Password);
-                var entropy = new byte[20];
-                using (var rng = RandomNumberGenerator.Create())
+  
+                using (var deriveBytes = new Rfc2898DeriveBytes(newPassword.Password, 20)) // 20-byte salt
                 {
-                    rng.GetBytes(entropy);
+                    byte[] salt = deriveBytes.Salt;
+                    byte[] key = deriveBytes.GetBytes(20); // 20-byte key
+
+                    encodedSalt = Convert.ToBase64String(salt);
+                    encodedKey = Convert.ToBase64String(key);
+
+                    // store encodedSalt and encodedKey in database
+                    // you could optionally skip the encoding and store the byte arrays directly
                 }
-
-                var cypherText = ProtectedData.Protect(
-                    passwordInBytes,
-                    entropy,
-                    DataProtectionScope.CurrentUser
-                );
-
-                var passwordIn64 = Convert.ToBase64String(cypherText);
-                var entropyIn64 = Convert.ToBase64String(entropy);
-
-                config.AppSettings.Settings["Password"].Value = passwordIn64;
-                config.AppSettings.Settings["Entropy"].Value = entropyIn64;
-
-
+                config.AppSettings.Settings["Password"].Value = newPassword.Password;
+               
                 config.Save(ConfigurationSaveMode.Full);
                 ConfigurationManager.RefreshSection("appSettings");
 
                 var command = new SqlCommand(sql, MainWindow._connection);
 
-                command.Parameters.Add("@new_password", SqlDbType.NVarChar).Value = passwordIn64;
-                command.Parameters.Add("@entropy", SqlDbType.NVarChar).Value = entropyIn64;
+                command.Parameters.Add("@new_password", SqlDbType.NVarChar).Value = encodedKey;
+                command.Parameters.Add("@entropy", SqlDbType.NVarChar).Value = encodedSalt;
                 command.Parameters.Add("@username", SqlDbType.NVarChar).Value = currentUsername.Text;        
                 command.ExecuteNonQuery();
                 DialogResult = true;
@@ -90,7 +84,7 @@ namespace BookStore
             return true;
         }
 
-        private string getPassword(string username)
+        private Boolean checkPassword(string username)
         {
             string sql =
                 "select password,entropy from ACCOUNT where username = @username";
@@ -100,27 +94,27 @@ namespace BookStore
 
             var reader = command.ExecuteReader();
 
-            string password = "";
-
+            string password = oldPassword.Password;
+            bool flag = false;
             while (reader.Read())
             {
 
-                string entropyIn64 = (string)reader["entropy"];
-                string passwordIn64 = (string)reader["password"];
+                string encodedSalt = (string)reader["entropy"];
+                string encodedKey = (string)reader["password"];
 
-                byte[] entropyInBytes = Convert.FromBase64String(entropyIn64);
-                byte[] cypherTextInBytes = Convert.FromBase64String(passwordIn64);
+                byte[] salt = Convert.FromBase64String(encodedSalt);
+                byte[] key = Convert.FromBase64String(encodedKey);
 
-                byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
-                    entropyInBytes,
-                    DataProtectionScope.CurrentUser
-                );
-
-                password = Encoding.UTF8.GetString(passwordInBytes);
+                using (var deriveBytes = new Rfc2898DeriveBytes(password, salt))
+                {
+                    byte[] testKey = deriveBytes.GetBytes(20); // 20-byte key
+                    if (testKey.SequenceEqual(key))
+                        flag = true;
+                }
 
             }
             reader.Close();
-            return password;
+            return flag;
         }
 
         private void authenButton_Click(object sender, RoutedEventArgs e)
@@ -128,9 +122,8 @@ namespace BookStore
             string oldPass = oldPassword.Password;
             if (currentUsername.Text != "" && oldPass != "")
             {
-                string temp_password = getPassword(currentUsername.Text);
 
-                if (temp_password != "" && temp_password.Equals(oldPass))
+                if (checkPassword(currentUsername.Text))
                 {
                     currentUsername.IsEnabled = false;
                     oldPassword.IsEnabled = false;
