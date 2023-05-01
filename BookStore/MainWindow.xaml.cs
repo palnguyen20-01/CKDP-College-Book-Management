@@ -74,7 +74,7 @@ namespace BookStore
                         var cypherText = ProtectedData.Protect(
                             passwordInBytes,
                             entropy,
-                            DataProtectionScope.CurrentUser
+                            DataProtectionScope.LocalMachine
                         );
 
                         var passwordIn64 = Convert.ToBase64String(cypherText);
@@ -93,12 +93,12 @@ namespace BookStore
                     this.Close();
                 }
                 else
-                {
+                {               
                     MessageBox.Show(
                     "Login Failed");
                 }
-
                 
+
             }
             catch (Exception ex)
             {
@@ -140,7 +140,7 @@ namespace BookStore
 
                 byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
                     entropyInBytes,
-                    DataProtectionScope.CurrentUser
+                    DataProtectionScope.LocalMachine
                 );
 
                 password = Encoding.UTF8.GetString(passwordInBytes);
@@ -167,7 +167,7 @@ namespace BookStore
 
                     byte[] passwordInBytes = ProtectedData.Unprotect(cypherTextInBytes,
                         entropyInBytes,
-                        DataProtectionScope.CurrentUser
+                        DataProtectionScope.LocalMachine
                     );
 
                     string password = Encoding.UTF8.GetString(passwordInBytes);
