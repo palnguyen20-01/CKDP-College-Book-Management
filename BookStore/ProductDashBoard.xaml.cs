@@ -134,6 +134,9 @@ namespace BookStore
                     
                     cnt++;
                 }
+                NameTop1.Content = LabelTop3[0 * 3];
+                NameTop2.Content = LabelTop3[0 * 3 + 1];
+                NameTop3.Content = LabelTop3[0 * 3 + 2];
                 BestSellerChart.AxisX.Add(new LiveCharts.Wpf.Axis
                 {
                     Title = "Datetime",
