@@ -58,17 +58,12 @@ namespace BookStore
                 {
                     if (rememberCheckBox.IsChecked == true)
                     {
-                        // Lưu username và pass
-                        var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                            ConfigurationUserLevel.None);
-                        
-                        config.AppSettings.Settings["Password"].Value = password;
-                        config.AppSettings.Settings["Username"].Value = username;
-                        //config.AppSettings.Settings["Entropy"].Value = entropyIn64;
-                        config.AppSettings.Settings["RememberMe"].Value = "1";
-                        //insert(username, passwordIn64, entropyIn64);
-                        config.Save(ConfigurationSaveMode.Full);
-                        System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                        // Lưu username và pass                     
+                        //insert(username, passwordIn64, entropyIn64);                    
+                        Properties.Settings.Default.Username = username;
+                        Properties.Settings.Default.Password = password;
+                        Properties.Settings.Default.RememberMe = "1";
+                        Properties.Settings.Default.Save();
                     }
 
                     HomeWindow home = new HomeWindow();
@@ -159,12 +154,13 @@ namespace BookStore
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            string rememberValue = System.Configuration.ConfigurationManager.AppSettings["RememberMe"]!;
+            string rememberValue = Properties.Settings.Default.RememberMe;
+             
             if (rememberValue.Equals("1"))
             {
                 rememberCheckBox.IsChecked = true;
-                string username = System.Configuration.ConfigurationManager.AppSettings["Username"]!;
-                string passwordIn64 = System.Configuration.ConfigurationManager.AppSettings["Password"]!;
+                string username = Properties.Settings.Default.Username;
+                string passwordIn64 = Properties.Settings.Default.Password;
                 //string entropyIn64 = System.Configuration.ConfigurationManager.AppSettings["Entropy"]!;
 
                 if (passwordIn64.Length != 0)
@@ -221,14 +217,8 @@ namespace BookStore
         {
             if (rememberCheckBox.IsChecked == false)
             {
-                var config = System.Configuration.ConfigurationManager.OpenExeConfiguration(
-                                ConfigurationUserLevel.None);
- 
-                config.AppSettings.Settings["RememberMe"].Value = "0";
-
-                //insert(username, passwordIn64, entropyIn64);
-                config.Save(ConfigurationSaveMode.Full);
-                System.Configuration.ConfigurationManager.RefreshSection("appSettings");
+                Properties.Settings.Default.RememberMe = "0";
+                Properties.Settings.Default.Save();
             }
         }
     }

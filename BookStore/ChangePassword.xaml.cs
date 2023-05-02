@@ -3,7 +3,6 @@ using MahApps.Metro.Controls;
 using Microsoft.Data.SqlClient;
 using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Linq;
 using System.Security.Cryptography;
@@ -41,9 +40,7 @@ namespace BookStore
                 "Update Account set password = @new_password, entropy = @entropy where username = @username";
 
                 string encodedSalt, encodedKey;
-                var config = ConfigurationManager.OpenExeConfiguration(
-                        ConfigurationUserLevel.None);
-  
+
                 using (var deriveBytes = new Rfc2898DeriveBytes(newPassword.Password, 20)) // 20-byte salt
                 {
                     byte[] salt = deriveBytes.Salt;
@@ -55,10 +52,8 @@ namespace BookStore
                     // store encodedSalt and encodedKey in database
                     // you could optionally skip the encoding and store the byte arrays directly
                 }
-                config.AppSettings.Settings["Password"].Value = newPassword.Password;
-               
-                config.Save(ConfigurationSaveMode.Full);
-                ConfigurationManager.RefreshSection("appSettings");
+                Properties.Settings.Default.RememberMe = "0";
+                Properties.Settings.Default.Save();
 
                 var command = new SqlCommand(sql, MainWindow._connection);
 
