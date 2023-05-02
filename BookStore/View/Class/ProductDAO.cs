@@ -103,6 +103,7 @@ namespace BookStore.View.Class
 
             //delete _categories
             _categories.Clear();
+            _categories.Add(new Category() { CategoryID = 0, CategoryName = "All" });
 
             //delete db
             _db.Categories.RemoveRange(_db.Categories);
@@ -191,6 +192,7 @@ namespace BookStore.View.Class
 
         private void resetPrice()
         {
+            if (_books.Count == 0) return;
             _price.maxPrice = _books.Max(book => int.Parse(book.Price));
             _price.minPrice = _books.Min(book => int.Parse(book.Price));
             _price.currentPrice = _price.maxPrice;
