@@ -55,10 +55,10 @@ namespace BookStore.View
 
             priceSliderDockPanel.DataContext = QLHangHoa._productDAO._price;
 
-            string closedTab = ConfigurationManager.AppSettings["ClosedTab"]!;
+            string closedTab = Properties.Settings.Default.ClosedTab;
             if (closedTab.Length > 0)
             {
-                int numTab = Int32.Parse(closedTab);
+                int numTab = int.Parse(closedTab);
                 Dispatcher.BeginInvoke((Action)(() => tabs.SelectedIndex = numTab));
             }
         }
@@ -144,11 +144,8 @@ namespace BookStore.View
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            var config = ConfigurationManager.OpenExeConfiguration(
-                        ConfigurationUserLevel.None);
-            config.AppSettings.Settings["ClosedTab"].Value = tabs.SelectedIndex.ToString();
-            config.Save(ConfigurationSaveMode.Full);
-            ConfigurationManager.RefreshSection("appSettings");
+            Properties.Settings.Default.ClosedTab = tabs.SelectedIndex.ToString();
+            Properties.Settings.Default.Save();
         }
 
 
